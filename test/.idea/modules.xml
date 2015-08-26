@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.cloud/org.kevoree.modeling.test.cloud.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.cloud/org.kevoree.modeling.test.cloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.datastore/org.kevoree.modeling.test.datastore.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.datastore/org.kevoree.modeling.test.datastore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.diamond/org.kevoree.modeling.test.diamond.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.diamond/org.kevoree.modeling.test.diamond.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.fsm/org.kevoree.modeling.test.fsm.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.fsm/org.kevoree.modeling.test.fsm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.kevoree/org.kevoree.modeling.test.kevoree.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.kevoree/org.kevoree.modeling.test.kevoree.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.opposite/org.kevoree.modeling.test.opposite.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.opposite/org.kevoree.modeling.test.opposite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.kevoree.modeling.test.root.iml" filepath="$PROJECT_DIR$/org.kevoree.modeling.test.root.iml" />
+    </modules>
+  </component>
+</project>
