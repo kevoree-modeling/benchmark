@@ -5,8 +5,14 @@ package org.kevoree.mwg.benchmark;
  */
 public class ExecuteBenchmark {
     public static void main(String[] arg){
-        CounterBenchmark counter = new CounterBenchmark(0,100000000,0);
-        counter.run();
+       /* BenchNormalCounter counter = new BenchNormalCounter(0,100000000,0,false,300000);
+        counter.run();*/
+
+        BenchTimeLineInsert tlinsert1m = new BenchTimeLineInsert(1000,1000000,1000000,false,10000000);
+        tlinsert1m.run();
+
+        /*BenchTimeLineInsert tlinsert3m = new BenchTimeLineInsert(1000,3000000,0,false,10000000);
+        tlinsert3m.run();*/
     }
 
 }

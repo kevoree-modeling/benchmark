@@ -1,8 +1,8 @@
 package org.kevoree.mwg.benchmark;
 
-import org.mwg.Callback;
-import org.mwg.DeferCounter;
-import org.mwg.Graph;
+import org.mwg.*;
+import org.mwg.core.scheduler.NoopScheduler;
+import org.mwg.ml.MLPlugin;
 import org.mwg.plugin.Job;
 
 import java.text.DecimalFormat;
@@ -28,6 +28,10 @@ public abstract class AbstractBenchmark {
     //MWG graph to initialize
     protected Graph graph;
 
+    protected boolean useOffHeap;
+
+    protected int cachesize;
+
     //Output of the test speed In value/sec
     private double benchmarkspeed;
 
@@ -51,14 +55,34 @@ public abstract class AbstractBenchmark {
         return benchmarkspeed;
     }
 
-    public String getBenchmarkspeedString(){
+    public String getBenchmarkspeedString() {
         return df.format(benchmarkspeed);
     }
 
-    public AbstractBenchmark(final int roundsBefore, final int rounds, final int displayEach){
-        this.roundsBefore=roundsBefore;
-        this.rounds=rounds;
-        this.displayEach=displayEach;
+    public String getGraphSettings() {
+        StringBuilder sb = new StringBuilder("[");
+
+        if (useOffHeap) {
+            sb.append("offheap");
+        } else {
+            sb.append("heap");
+        }
+
+        if(cachesize!=0){
+            sb.append(", cache: ").append(df.format(cachesize));
+        }
+
+        sb.append("]");
+        return sb.toString();
+    }
+
+
+    public AbstractBenchmark(final int roundsBefore, final int rounds, final int displayEach, final boolean useOffHeap, final int cachesize) {
+        this.roundsBefore = roundsBefore;
+        this.rounds = rounds;
+        this.displayEach = displayEach;
+        this.useOffHeap = useOffHeap;
+        this.cachesize = cachesize;
     }
 
     public static double getTime(long endTime, long startTime, int counter) {
@@ -67,35 +91,51 @@ public abstract class AbstractBenchmark {
         return x;
     }
 
-    public String getExecTimeString(){
+    public String getExecTimeString() {
         double x = execTime;
-        if(x<1000){
-            return nf.format(x)+" ns";
-        }
-        else if(x<1000000){
-            x=x/1000.0;
-            return nf.format(x)+" μs";
-        }
-        else if(x<1000000000){
-            x=x/1000000.0;
-            return nf.format(x)+" ms";
-        }
-        else{
-            x=x/1000000000.0;
-            return nf.format(x)+" s";
+        if (x < 1000) {
+            return nf.format(x) + " ns";
+        } else if (x < 1000000) {
+            x = x / 1000.0;
+            return nf.format(x) + " μs";
+        } else if (x < 1000000000) {
+            x = x / 1000000.0;
+            return nf.format(x) + " ms";
+        } else {
+            x = x / 1000000000.0;
+            return nf.format(x) + " s";
         }
     }
 
 
     //Main implementation methods
-    protected abstract void initializeGraph(Callback<Boolean> callback);
 
-    protected abstract void runBeforeBench(Callback<Boolean> callback);
+    //Create the graph here
+    protected void initializeGraph(Callback<Boolean> callback) {
+        GraphBuilder gb = new GraphBuilder()
+                .withPlugin(new MLPlugin())
+                .withScheduler(new NoopScheduler());
+        if (useOffHeap) {
+            gb.withOffHeapMemory();
+        }
+        if(cachesize!=0){
+            gb.withMemorySize(cachesize);
+        }
 
-    protected abstract void oneRoundBench(Callback<Boolean> callback);
+        graph = gb.build();
 
-    protected abstract void runAfterBench(Callback<Boolean> callback);
+        graph.connect(callback);
+    }
 
+    protected abstract void runBeforeBench(final Callback<Boolean> callback);
+
+    protected abstract void oneRoundBench(final int num, final boolean warmup, final Callback<Boolean> callback);
+
+    protected abstract void runAfterBench(final Callback<Boolean> callback);
+
+    protected void graphDisconnect(Callback<Boolean> callback) {
+        graph.disconnect(callback);
+    }
 
     //The benchmark function
     public void run() {
@@ -104,11 +144,9 @@ public abstract class AbstractBenchmark {
 
                 runBeforeBench(new Callback<Boolean>() {
                     public void on(final Boolean result) {
-
-
                         final DeferCounter defer = graph.newCounter(roundsBefore);
                         for (int i = 0; i < roundsBefore; i++) {
-                            oneRoundBench(new Callback<Boolean>() {
+                            oneRoundBench(i, true, new Callback<Boolean>() {
                                 public void on(Boolean result) {
                                     defer.count();
                                 }
@@ -123,10 +161,10 @@ public abstract class AbstractBenchmark {
                                 final long startTime = System.nanoTime();
 
                                 for (int i = 0; i < rounds; i++) {
-                                    oneRoundBench(new Callback<Boolean>() {
+                                    oneRoundBench(i, false, new Callback<Boolean>() {
                                         public void on(Boolean result) {
                                             defer2.count();
-                                            if(displayEach>0) {
+                                            if (displayEach > 0) {
                                                 int count = defer2.getCount();
                                                 if (count % displayEach == 0) {
                                                     double speed = getTime(System.nanoTime(), startTime, count);
@@ -138,13 +176,13 @@ public abstract class AbstractBenchmark {
                                 }
                                 defer2.then(new Job() {
                                     public void run() {
-                                        long endTime=System.nanoTime();
-                                        execTime=endTime-startTime;
+                                        long endTime = System.nanoTime();
+                                        execTime = endTime - startTime;
                                         double speed = getTime(endTime, startTime, rounds);
-                                        benchmarkspeed =speed;
-                                        System.out.println("Final Avg speed at counter " + df.format(rounds) + " is: " + df.format(speed)+" v/s");
+                                        benchmarkspeed = speed;
+                                        System.out.println("Final Avg speed at counter " + df.format(rounds) + " is: " + df.format(speed) + " v/s");
 
-                                        final DeferCounter defer3=graph.newCounter(1);
+                                        final DeferCounter defer3 = graph.newCounter(1);
                                         runAfterBench(new Callback<Boolean>() {
                                             public void on(Boolean result) {
                                                 defer3.count();
@@ -152,13 +190,22 @@ public abstract class AbstractBenchmark {
                                         });
                                         defer3.then(new Job() {
                                             public void run() {
+                                                final DeferCounter defer4 = graph.newCounter(1);
+                                                graphDisconnect(new Callback<Boolean>() {
+                                                    public void on(Boolean result) {
+                                                        System.gc();
+                                                        System.out.println(getName() + " is completed in " + getExecTimeString());
+                                                        defer4.count();
+                                                    }
+                                                });
+                                                defer4.then(new Job() {
+                                                    public void run() {
+                                                        System.out.println();
+                                                    }
+                                                });
 
-                                                System.out.println(getName()+" is completed in "+getExecTimeString());
-                                                System.out.println();
                                             }
                                         });
-
-
                                     }
                                 });
                             }
@@ -168,7 +215,6 @@ public abstract class AbstractBenchmark {
             }
         });
     }
-
 
 
 }
