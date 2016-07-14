@@ -7,6 +7,7 @@ import org.mwg.plugin.Job;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Random;
 
 /**
  * Created by assaad on 13/07/16.
@@ -16,6 +17,8 @@ public abstract class AbstractBenchmark {
     //Number formating tools
     protected static NumberFormat df = new DecimalFormat("#,###");
     protected static NumberFormat nf = new DecimalFormat("#,###.00");
+    protected static Random random=new Random();
+    protected static String value="value";
 
     //Warmup rounds to run before actual benchmark
     protected final int roundsBefore;
