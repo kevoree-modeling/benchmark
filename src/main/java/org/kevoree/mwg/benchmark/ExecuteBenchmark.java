@@ -5,9 +5,9 @@ package org.kevoree.mwg.benchmark;
  */
 public class ExecuteBenchmark {
     public static void main(String[] arg) {
-//        BenchEmpty counter = new BenchEmpty(1000, 1000000000, 0, false, 100000);
+//        BenchEmpty counter = new BenchEmpty(1000, 100000000, 0, false, 100000);
 //        counter.run();
-//
+
 
 //        BenchTimeLineInsert tlinsert1m = new BenchTimeLineInsert(1000, 3000000, 0, false, 5000000);
 //        tlinsert1m.run();
@@ -18,14 +18,18 @@ public class ExecuteBenchmark {
 //        BenchNewNodes newnode1m= new BenchNewNodes(1000, 3000000, 0, false, 15000000);
 //        newnode1m.run();
 
-        BenchLookupNodes lookupNodes=new BenchLookupNodes(1000, 3000000, 0, false, 15000000);
-        lookupNodes.run();
+//        BenchLookupNodes lookupNodes=new BenchLookupNodes(1000, 3000000, 0, false, 15000000);
+//        lookupNodes.run();
 
 //        BenchTimeLineInsert tlinsert3m = new BenchTimeLineInsert(1000,3000000,0,false,10000000);
 //        tlinsert3m.run();
 
-//        BenchHashFunction hashBench = new BenchHashFunction(1000, 3000000, 0, false, 5000000);
-//        hashBench.run();
+
+        BenchHashFunction hashBench = new BenchHashFunction(1000, 100000000, 0, false, 100000);
+        hashBench.run();
+
+//        BenchJavaRandom javaRandom = new BenchJavaRandom(1000, 100000000, 0, false, 100000);
+//        javaRandom.run();
     }
 
 }
