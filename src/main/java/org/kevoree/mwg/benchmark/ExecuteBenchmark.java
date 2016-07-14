@@ -12,6 +12,7 @@ public class ExecuteBenchmark {
 //        BenchTimeLineInsert tlinsert1m = new BenchTimeLineInsert(1000, 3000000, 0, false, 5000000);
 //        tlinsert1m.run();
 
+
 //        BenchTimeLineRead tlread1m = new BenchTimeLineRead(1000, 3000000, 0, false, 5000000);
 //        tlread1m.run();
 
@@ -21,8 +22,12 @@ public class ExecuteBenchmark {
 //        BenchLookupNodes lookupNodes=new BenchLookupNodes(1000, 3000000, 0, false, 15000000);
 //        lookupNodes.run();
 
-        BenchAddRelation addrelbench=new BenchAddRelation(0, 100000, 0, false, 1500000);
-        addrelbench.run();
+//        BenchAddRelation addrelbench=new BenchAddRelation(0, 100000, 0, true, 1500000);
+//        addrelbench.run();
+
+
+        BenchAddRelationLongArray addrelbencharr=new BenchAddRelationLongArray(0, 100000000, 0, true, 1500000);
+        addrelbencharr.run();
 
 //        BenchTimeLineInsert tlinsert3m = new BenchTimeLineInsert(1000,3000000,0,false,10000000);
 //        tlinsert3m.run();
@@ -30,7 +35,7 @@ public class ExecuteBenchmark {
 
 //        BenchHashFunction hashBench = new BenchHashFunction(1000, 100000000, 0, false, 100000);
 //        hashBench.run();
-
+//
 //        BenchJavaRandom javaRandom = new BenchJavaRandom(1000, 100000000, 0, false, 100000);
 //        javaRandom.run();
 
