@@ -19,7 +19,7 @@ public class BenchHashFunction extends AbstractBenchmark {
 
 
     protected String getName() {
-        return "Hash function Benchmark, " + getGraphSettings();
+        return "Triple Hash function Benchmark, " + getGraphSettings();
     }
 
     protected void runBeforeBench(final Callback<Boolean> callback) {

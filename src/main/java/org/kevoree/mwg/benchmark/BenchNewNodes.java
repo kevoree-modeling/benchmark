@@ -14,7 +14,7 @@ public class BenchNewNodes extends AbstractBenchmark {
 
 
     protected String getName() {
-        return "Insert New nodes Benchmark, "+getGraphSettings();
+        return "Insert new nodes Benchmark, "+getGraphSettings();
     }
 
     protected void runBeforeBench(final Callback<Boolean> callback) {

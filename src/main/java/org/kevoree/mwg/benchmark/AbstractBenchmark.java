@@ -18,7 +18,8 @@ public abstract class AbstractBenchmark {
     protected static NumberFormat df = new DecimalFormat("#,###");
     protected static NumberFormat nf = new DecimalFormat("#,###.00");
     protected static Random random=new Random();
-    protected static String value="value";
+    protected static String value="_value";
+    protected static String relation="_relation";
 
     //Warmup rounds to run before actual benchmark
     protected final int roundsBefore;
@@ -206,7 +207,6 @@ public abstract class AbstractBenchmark {
                                                         System.out.println();
                                                     }
                                                 });
-
                                             }
                                         });
                                     }
