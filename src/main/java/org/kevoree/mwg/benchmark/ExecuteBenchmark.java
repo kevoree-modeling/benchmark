@@ -26,8 +26,11 @@ public class ExecuteBenchmark {
 //        addrelbench.run();
 
 
-        BenchAddRelationLongArray addrelbencharr=new BenchAddRelationLongArray(0, 100000000, 0, true, 1500000);
-        addrelbencharr.run();
+//        BenchAddRelationLongArray addrelbencharr=new BenchAddRelationLongArray(0, 100000000, 0, false, 1500000);
+//        addrelbencharr.run();
+
+        BenchAddRelationRandomGraph addrelRand=new BenchAddRelationRandomGraph(0,1000000,0,false,1000000);
+        addrelRand.run();
 
 //        BenchTimeLineInsert tlinsert3m = new BenchTimeLineInsert(1000,3000000,0,false,10000000);
 //        tlinsert3m.run();
