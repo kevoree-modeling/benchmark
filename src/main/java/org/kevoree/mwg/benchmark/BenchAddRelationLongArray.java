@@ -8,7 +8,7 @@ import org.mwg.Callback;
 public class BenchAddRelationLongArray extends AbstractBenchmark {
 
     int count = 0;
-    int limit = 2;
+    int limit = 1;
     private long[] root = new long[limit];
 
     public BenchAddRelationLongArray(int roundsBefore, int rounds, int displayEach, boolean useOffHeap, int cachesize) {
@@ -33,8 +33,8 @@ public class BenchAddRelationLongArray extends AbstractBenchmark {
             return;
         }
         else{
-            limit=(int)(limit*1.7)+1;
-//            limit=limit+1;
+           // limit=(int)(limit*2);
+            limit=limit+1;
             long[] temp=new long[limit];
             System.arraycopy(root, 0, temp, 0, root.length);
             temp[root.length] = num;
