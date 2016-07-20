@@ -91,7 +91,7 @@ public abstract class AbstractBenchmark {
 
     public static double getTime(long endTime, long startTime, int counter) {
         double x = endTime - startTime;
-        x = 1000000000 * (counter / x);
+        x = 1_000_000_000 * (counter / x);
         return x;
     }
 
