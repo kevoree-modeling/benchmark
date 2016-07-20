@@ -1,0 +1,31 @@
+{
+  "benchmarks" : [
+    {
+      "class": "BenchEmpty",
+      "roundsBefore": 1000,
+      "rounds": 200000000,
+      "displayEach": 0,
+      "useOffHeap": false,
+      "cacheSize": 100000
+    },
+    {
+      "class": "BenchJavaRandom",
+      "roundsBefore": 1000,
+      "rounds": 100000000,
+      "displayEach": 0,
+      "useOffHeap": false,
+      "cacheSize": 100000
+    },
+    {
+      "class": "BenchHashFunction",
+      "roundsBefore": 1000,
+      "rounds": 100000000,
+      "displayEach": 0,
+      "useOffHeap": false,
+      "cacheSize": 100000
+    }
+  ],
+  "logFile": "benchmark.log",
+  "resultFile" : "result.csv"
+
+}

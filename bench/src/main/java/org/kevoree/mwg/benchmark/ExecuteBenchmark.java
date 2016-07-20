@@ -19,7 +19,6 @@ public class ExecuteBenchmark {
         res[3] = Boolean.parseBoolean(args[4]);
         res[4] = Integer.parseInt(args[5]);
 
-
         return res;
     }
     public static void main(String[] args) {
