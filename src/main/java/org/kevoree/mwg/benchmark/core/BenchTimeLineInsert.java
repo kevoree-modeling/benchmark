@@ -1,5 +1,6 @@
-package org.kevoree.mwg.benchmark;
+package org.kevoree.mwg.benchmark.core;
 
+import org.kevoree.mwg.benchmark.AbstractBenchmark;
 import org.mwg.Callback;
 import org.mwg.Node;
 

@@ -1,5 +1,9 @@
 package org.kevoree.mwg.benchmark;
 
+import org.kevoree.mwg.benchmark.core.BenchAddRelation;
+import org.kevoree.mwg.benchmark.general.BenchKDTreeJava;
+import org.kevoree.mwg.benchmark.ml.BenchmarkKDTree;
+
 /**
  * Created by assaad on 13/07/16.
  */
@@ -34,13 +38,18 @@ public class ExecuteBenchmark {
 //        BenchWorldRead worldread1m = new BenchWorldRead(0, 1000000, 0, false, 5000000);
 //        worldread1m.run();
 
-        BenchWorldStairRead worldstairread1m = new BenchWorldStairRead(0, 10000, 0, false, 100000);
-        worldstairread1m.run();
+//        BenchWorldStairRead worldstairread1m = new BenchWorldStairRead(0, 10000, 0, false, 100000);
+//        worldstairread1m.run();
 
-//        BenchAddRelation addrelbench=new BenchAddRelation(0, 100000, 0, true, 1500000);
+//        BenchAddRelation addrelbench=new BenchAddRelation(0, 1000000, 0, false, 5000000);
 //        addrelbench.run();
 
 
+//        BenchKDTreeJava benchKDTreeJava=new BenchKDTreeJava(0,1000000,0,false,100000);
+//        benchKDTreeJava.run();
+
+        BenchmarkKDTree benchmarkKDTree=new BenchmarkKDTree(0,100000,0,false,5000000);
+        benchmarkKDTree.run();
 //        BenchAddRelationLongArray addrelbencharr=new BenchAddRelationLongArray(0, 100000, 0, false, 1500000);
 //        addrelbencharr.run();
 
@@ -52,7 +61,6 @@ public class ExecuteBenchmark {
 
 
 //
-
 
     }
 
