@@ -53,6 +53,7 @@ public class ExecuteBenchmark {
         } else {
             throw new RuntimeException("Unknown benchmark " + args[0]);
         }
+
     }
 
 }

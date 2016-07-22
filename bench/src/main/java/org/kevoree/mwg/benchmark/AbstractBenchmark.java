@@ -17,7 +17,8 @@ public abstract class AbstractBenchmark {
     //Number formating tools
     protected static NumberFormat df = new DecimalFormat("#,###");
     protected static NumberFormat nf = new DecimalFormat("#,###.00");
-    protected static Random random=new Random();
+    public static long randSeed=1256335488963325663l;
+    protected static Random random=new Random(randSeed);
     protected static String value="_value";
     protected static String relation="_relation";
 

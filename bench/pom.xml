@@ -22,12 +22,14 @@
             <groupId>org.kevoree.mwg</groupId>
             <artifactId>core</artifactId>
             <version>${mwg.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.kevoree.mwg.plugins</groupId>
             <artifactId>ml</artifactId>
             <version>${mwg.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
