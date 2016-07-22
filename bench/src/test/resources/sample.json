@@ -1,0 +1,11 @@
+{
+  "bench": "TODO",
+  "configuration": {
+    "roundsBefore": 1,
+    "rounds": 2,
+    "displayEach": 3,
+    "useOffHeap": true,
+    "cacheSize": 4
+  },
+  "benchmarkSpeed": 55
+}

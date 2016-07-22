@@ -60,6 +60,22 @@ public abstract class AbstractBenchmark {
         return benchmarkspeed;
     }
 
+    public int getRoundsBefore() {
+        return roundsBefore;
+    }
+
+    public int getDisplayEach() {
+        return displayEach;
+    }
+
+    public boolean isUseOffHeap() {
+        return useOffHeap;
+    }
+
+    public int getCachesize() {
+        return cachesize;
+    }
+
     public String getBenchmarkspeedString() {
         return df.format(benchmarkspeed);
     }

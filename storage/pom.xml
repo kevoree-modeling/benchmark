@@ -9,31 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Benchmark :: Bench</name>
+    <name>Benchmark :: Storage</name>
 
-    <artifactId>bench</artifactId>
-
-    <properties>
-        <mwg.version>7-SNAPSHOT</mwg.version>
-    </properties>
+    <artifactId>benchmark.storage</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.mwg</groupId>
-            <artifactId>core</artifactId>
-            <version>${mwg.version}</version>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>1.3.22.Final</version>
         </dependency>
 
         <dependency>
-            <groupId>org.kevoree.mwg.plugins</groupId>
-            <artifactId>ml</artifactId>
-            <version>${mwg.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.mashape.unirest</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>1.4.9</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.14</version>
         </dependency>
 
 
@@ -43,7 +33,15 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
