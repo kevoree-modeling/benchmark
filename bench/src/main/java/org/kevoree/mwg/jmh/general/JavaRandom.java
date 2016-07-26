@@ -10,13 +10,14 @@ public class JavaRandom {
 
     @State(Scope.Thread)
     public static class MyRandom {
-        public Random random = new Random(1256335488963325663L);
+        Random random = new Random(1256335488963325663L);
     }
 
     @Benchmark
-    @Warmup(batchSize = 1)
-    @Measurement(batchSize = 1)
-    @BenchmarkMode(Mode.Throughput)
+    @Fork(10)
+    @Warmup(iterations = 100, batchSize = 1)
+    @Measurement(iterations = 100_000,batchSize = 1)
+    @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long benchJavaRandom(MyRandom myRandom) {
         return myRandom.random.nextLong();

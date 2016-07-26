@@ -8,8 +8,8 @@ import org.mwg.Callback;
  */
 public class BenchAddRelationLongArray extends AbstractBenchmark {
 
-    int count = 0;
-    int limit = 1;
+    private int count = 0;
+    private int limit = 1;
     private long[] root = new long[limit];
 
     public BenchAddRelationLongArray(int roundsBefore, int rounds, int displayEach, boolean useOffHeap, int cachesize) {

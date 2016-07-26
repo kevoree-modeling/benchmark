@@ -10,16 +10,15 @@ import java.util.concurrent.TimeUnit;
 
 public class JavaKDTree {
 
-    private static int dim=4;
-    private static ArrayList<double[]> vecs=new ArrayList<double[]>();
-    private static Object[] values;
-    private static KDNodeJava root=new KDNodeJava();
-
-
-    @State(Scope.Benchmark)
+    @State(Scope.Thread)
     public static class Parameter {
-        @Param
-        public int vecsSize;
+        @Param("1000000")
+        int vecsSize;
+
+        ArrayList<double[]> vecs=new ArrayList<double[]>();
+        Object[] values;
+        KDNodeJava root=new KDNodeJava();
+        int counter = 0;
 
         @Setup
         public void setup() {
@@ -28,9 +27,11 @@ public class JavaKDTree {
             root.setDistance(new EuclideanDistance());
             values=new Object[vecsSize];
 
+            int dim = 4;
+
             for(int i=0;i<vecsSize;i++){
                 double[] v= new double[dim];
-                for(int j=0;j<dim;j++){
+                for(int j = 0; j< dim; j++){
                     v[j]=random.nextDouble();
                 }
                 vecs.add(v);
@@ -42,14 +43,14 @@ public class JavaKDTree {
 
 
     @Benchmark
-    @Warmup(batchSize = 1)
-    @Measurement(batchSize = 1)
-    @BenchmarkMode(Mode.Throughput)
+    @Fork(10)
+    @Warmup(iterations = 0, batchSize = 1)
+    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public Object javaKDTree() {
-        for(int i=0;i<vecs.size();i++) {
-            root.insert(vecs.get(i), values[i], null);
-        }
+    public Object javaKDTree(Parameter parameter) {
+        parameter.root.insert(parameter.vecs.get(parameter.counter),parameter.values[parameter.counter],null);
+        parameter.counter++;
         return null;
     }
 }

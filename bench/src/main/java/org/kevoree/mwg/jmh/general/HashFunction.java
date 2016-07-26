@@ -21,9 +21,10 @@ public class HashFunction {
     }
 
     @Benchmark
-    @Warmup(batchSize = 1)
-    @Measurement(batchSize = 1)
-    @BenchmarkMode(Mode.Throughput)
+    @Fork(10)
+    @Warmup(iterations = 1_000, batchSize = 1)
+    @Measurement(iterations = 100_000_000, batchSize = 1)
+    @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long javaHashFunction(Parameters parameters) {
         return PrimitiveHelper.tripleHash((byte)0,parameters.v1,parameters.v2,parameters.v3,parameters.cacheSize);

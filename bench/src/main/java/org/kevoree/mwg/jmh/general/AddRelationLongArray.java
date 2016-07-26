@@ -6,26 +6,34 @@ import java.util.concurrent.TimeUnit;
 
 public class AddRelationLongArray {
 
-    @State(Scope.Benchmark)
+    @State(Scope.Thread)
     public static class Parameter {
         @Param("1")
-        public int lenghtArray;
+        public int coeff;
+
+        @Param("1")
+        public int added;
+
+        long[] array = new long[0];
+        int counter = 0;
     }
 
     @Benchmark
-    @Warmup(batchSize = 1)
-    @Measurement(batchSize = 1)
-    @BenchmarkMode(Mode.Throughput)
+    @Fork(10)
+    @Warmup(iterations = 100, batchSize = 1)
+    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long benchAddRelationLongArray(Parameter parameter) {
-        long[] array = new long[0];
-        for(int i=0;i<parameter.lenghtArray;i++) {
-
-            long[] tmp = new long[array.length + 1];
-            System.arraycopy(array,0,tmp,0,array.length);
-            tmp[array.length] = 1L;
-            array = tmp;
-        }
-        return array.length;
+            if(parameter.counter<parameter.array.length) {
+                parameter.array[parameter.counter] = parameter.counter;
+            } else {
+                long[] tmp = new long[parameter.array.length * parameter.coeff + parameter.added];
+                System.arraycopy(parameter.array,0,tmp,0,parameter.array.length);
+                tmp[parameter.array.length] = 1L;
+                parameter.array = tmp;
+            }
+        parameter.counter++;
+        return parameter.array.length;
     }
 }
