@@ -59,7 +59,7 @@ public class TimeLineRead {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
+    @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
     @Warmup(iterations = 100, batchSize = 1)
     @Measurement(iterations = 1_000_000, batchSize = 1)
