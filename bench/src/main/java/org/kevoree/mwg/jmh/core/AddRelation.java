@@ -24,7 +24,7 @@ public class AddRelation {
         @Param("5000000")
         long cacheSize;
 
-        @Param("1000000")
+        @Param("1000010")
         int nbChildren;
 
         @Setup
@@ -58,9 +58,10 @@ public class AddRelation {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @Warmup(iterations = 1, batchSize = 10)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchAddRelation(Parameter parameter) {
         parameter.root.add("childs",parameter.children[parameter.counter]);
         parameter.counter++;

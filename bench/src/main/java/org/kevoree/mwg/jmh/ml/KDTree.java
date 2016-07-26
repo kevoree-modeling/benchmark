@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ludovicmouline on 26/07/16.
- */
 public class KDTree {
     @State(Scope.Thread)
     public static class Parameter {
@@ -67,9 +64,10 @@ public class KDTree {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @Warmup(iterations = 1, batchSize = 100)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void newNodes(Parameter param) {
         param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
         param.counter++;

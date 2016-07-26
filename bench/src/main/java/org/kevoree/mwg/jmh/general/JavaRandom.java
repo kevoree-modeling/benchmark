@@ -14,10 +14,10 @@ public class JavaRandom {
     }
 
     @Benchmark
-    @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 100_000,batchSize = 1)
-    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(1)
+    @Warmup(iterations = 1, batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1,batchSize = 1, time = 10, timeUnit = TimeUnit.SECONDS)
+    @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long benchJavaRandom(MyRandom myRandom) {
         return myRandom.random.nextLong();

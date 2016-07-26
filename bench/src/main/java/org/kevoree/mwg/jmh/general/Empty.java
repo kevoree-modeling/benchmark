@@ -9,9 +9,9 @@ public class Empty {
 
     @Benchmark
     @Fork(1)
-    @Warmup(iterations = 10, batchSize = 1)
-    @Measurement(iterations = 100_000, batchSize = 1)
-    @BenchmarkMode(Mode.SingleShotTime)
+    @Warmup(iterations = 1,batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1,batchSize = 1, time = 5, timeUnit = TimeUnit.SECONDS)
+    @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public Object emptyBench() {
         return null;

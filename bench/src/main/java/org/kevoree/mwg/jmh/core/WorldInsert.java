@@ -22,7 +22,7 @@ public class WorldInsert {
         @Param(value = {"false","true"})
         boolean useHeap;
 
-        @Param("500000")
+        @Param("5000000")
         long cacheSize;
 
         @Setup
@@ -51,10 +51,11 @@ public class WorldInsert {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @Warmup(iterations = 1, batchSize = 10)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void newNodes(Parameter param) {
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
+    public void benchWorldInsert(Parameter param) {
         param.previousWorld = param.graph.fork(param.previousWorld);
         param.graph.lookup(param.previousWorld, 0, param.node.id(), new Callback<Node>() {
             @Override

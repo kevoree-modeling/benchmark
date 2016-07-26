@@ -4,7 +4,6 @@ import org.kevoree.mwg.benchmark.utils.KDNodeJava;
 import org.mwg.ml.common.distance.EuclideanDistance;
 import org.openjdk.jmh.annotations.*;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -12,45 +11,42 @@ public class JavaKDTree {
 
     @State(Scope.Thread)
     public static class Parameter {
-        @Param("1000000")
-        int vecsSize;
 
-        ArrayList<double[]> vecs=new ArrayList<double[]>();
-        Object[] values;
-        KDNodeJava root=new KDNodeJava();
-        int counter = 0;
+        KDNodeJava root;
+        double[] keys;
+        Object value;
 
-        @Setup
-        public void setup() {
-            Random random = new Random(1256335488963325663L);
+        private Random random;
+
+        @Setup(Level.Trial)
+        public void benchSetup() {
+            random = new Random(1256335488963325663L);
+            root=new KDNodeJava();
             root.setThreshold(1e-30);
             root.setDistance(new EuclideanDistance());
-            values=new Object[vecsSize];
 
-            int dim = 4;
+            keys = new double[4];
+        }
 
-            for(int i=0;i<vecsSize;i++){
-                double[] v= new double[dim];
-                for(int j = 0; j< dim; j++){
-                    v[j]=random.nextDouble();
-                }
-                vecs.add(v);
-                values[i]=new Object();
+        @Setup(Level.Invocation)
+        public void methodSetup() {
+            for(int i=0;i<keys.length;i++) {
+                keys[i] = random.nextDouble();
             }
+            value = new Object();
         }
 
     }
 
 
     @Benchmark
-    @Fork(10)
-    @Warmup(iterations = 0, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
-    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(1)
+    @Warmup(iterations = 1,batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1,batchSize = 1, time = 10, timeUnit = TimeUnit.SECONDS)
+    @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public Object javaKDTree(Parameter parameter) {
-        parameter.root.insert(parameter.vecs.get(parameter.counter),parameter.values[parameter.counter],null);
-        parameter.counter++;
+        parameter.root.insert(parameter.keys,parameter.value,null);
         return null;
     }
 }

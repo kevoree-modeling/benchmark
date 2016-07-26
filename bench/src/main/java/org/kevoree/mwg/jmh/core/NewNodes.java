@@ -19,11 +19,8 @@ public class NewNodes {
         @Param(value = {"false","true"})
         boolean useHeap;
 
-        @Param("500000")
+        @Param("5000000")
         long cacheSize;
-
-        @Param("1000000")
-        int nbChildren;
 
         @Setup
         public void setup() {
@@ -46,13 +43,15 @@ public class NewNodes {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @Warmup(iterations = 1, batchSize = 10)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void newNodes(Parameter param) {
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
+    public Object benchNewNodes(Parameter param) {
         Node insert = param.graph.newNode(0,0);
         insert.set("value",33);
         insert.free();
+        return null;
     }
 
 }

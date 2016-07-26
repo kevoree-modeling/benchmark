@@ -8,7 +8,7 @@ public class AddRelationLongArray {
 
     @State(Scope.Thread)
     public static class Parameter {
-        @Param("1")
+        @Param(value = {"1","2"})
         public int coeff;
 
         @Param("1")
@@ -20,10 +20,11 @@ public class AddRelationLongArray {
 
     @Benchmark
     @Fork(10)
-    @Warmup(iterations = 100, batchSize = 1)
-    @Measurement(iterations = 1_000_000, batchSize = 1)
+    @Warmup(iterations = 1, batchSize = 10)
+    @Measurement(iterations = 1, batchSize = 1_000)
     @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public long benchAddRelationLongArray(Parameter parameter) {
             if(parameter.counter<parameter.array.length) {
                 parameter.array[parameter.counter] = parameter.counter;

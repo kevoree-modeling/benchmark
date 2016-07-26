@@ -2,9 +2,7 @@ package org.kevoree.mwg.benchmark;
 
 import org.kevoree.mwg.benchmark.core.*;
 import org.kevoree.mwg.benchmark.general.*;
-import org.kevoree.mwg.benchmark.json.JsonFormat;
 import org.kevoree.mwg.benchmark.ml.BenchmarkKDTree;
-import org.kevoree.mwg.benchmark.rest.Storage;
 
 /**
  *  Useful for manual bench
@@ -13,17 +11,17 @@ public class ExecuteBenchmark {
 
     public static void main(String[] args) {
         Object[] params = new Object[]{
-                Integer.parseInt(args[1]),
-                Integer.parseInt(args[2]),
-                Integer.parseInt(args[3]),
-                Boolean.parseBoolean(args[4]),
-                Integer.parseInt(args[5])
+                10,
+                200_000,
+                0,
+                true,
+                5_000_000
         };
 
 
         AbstractBenchmark bench = null;
-        String benchToLaunch = args[0];
-        String url = args[6];
+        String benchToLaunch = "BenchAddRelation";
+        String url = "";
 
 
         //core benchs
@@ -70,7 +68,7 @@ public class ExecuteBenchmark {
         bench.run();
 
         //Uncomment the two following lines if you want to save the result
-        Storage.save(url, JsonFormat.result2Json(bench));
+//        Storage.save(url, JsonFormat.result2Json(bench));
 
 
 
