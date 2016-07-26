@@ -81,7 +81,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>mwg-${mwg.version}-benchmark</finalName>
+                            <finalName>mwg-benchmark</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.openjdk.jmh.Main</mainClass>

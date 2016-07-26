@@ -18,7 +18,8 @@ public class AddRelation {
 
         int counter;
 
-        @Param(value = {"false","true"})
+        //todo put offheap when the Node.add() offheap implementation will be fixed
+        @Param(value = {"true"})
         boolean useHeap;
 
         @Param("5000000")
