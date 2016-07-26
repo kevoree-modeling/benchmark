@@ -24,7 +24,7 @@ public class KDTree {
         @Param(value = {"false","true"})
         boolean useHeap;
 
-        @Param("500000")
+        @Param("5000000")
         long cacheSize;
 
         @Setup
@@ -68,7 +68,7 @@ public class KDTree {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void newNodes(Parameter param) {
+    public void benchKDTree(Parameter param) {
         param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
         param.counter++;
     }
