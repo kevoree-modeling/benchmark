@@ -1,6 +1,6 @@
 package org.kevoree.mwg.benchmark.general;
 
-import org.kevoree.mwg.benchmark.storage.utils.KDNodeJava;
+import org.kevoree.mwg.benchmark.utils.KDNodeJava;
 import org.mwg.ml.common.distance.EuclideanDistance;
 import org.openjdk.jmh.annotations.*;
 
