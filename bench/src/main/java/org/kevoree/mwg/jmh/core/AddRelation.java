@@ -15,6 +15,7 @@ public class AddRelation {
         Graph graph;
         Node root;
         Node[] children;
+        long startAvailableSpace;
 
         int counter;
 
@@ -40,6 +41,7 @@ public class AddRelation {
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
                     root = graph.newNode(0,0);
                     children = new Node[nbChildren];
 
@@ -52,7 +54,19 @@ public class AddRelation {
 
         @TearDown
         public void tearDown() {
-            graph.disconnect(null);
+            for(int i=0;i<children.length;i++) {
+                children[i].free();
+            }
+
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
         }
     }
 

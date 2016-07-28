@@ -1,5 +1,6 @@
 package org.kevoree.mwg.jmh.core;
 
+import org.mwg.Callback;
 import org.mwg.Graph;
 import org.mwg.GraphBuilder;
 import org.mwg.Node;
@@ -15,6 +16,7 @@ public class NewNodes {
     @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
+        long startAvailableSpace;
 
         @Param(value = {"false","true"})
         boolean useHeap;
@@ -31,12 +33,25 @@ public class NewNodes {
             }
             graph = graphBuilder.build();
 
-            graph.connect(null);
+            graph.connect(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
+                }
+            });
         }
 
         @TearDown
         public void tearDown() {
-            graph.disconnect(null);
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
         }
     }
 

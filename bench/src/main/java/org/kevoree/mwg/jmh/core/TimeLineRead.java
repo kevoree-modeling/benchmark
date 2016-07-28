@@ -18,6 +18,7 @@ public class TimeLineRead {
         Graph graph;
         Node node;
         int counter;
+        long startAvailableSpace;
 
         @Param(value = {"false","true"})
         boolean useHeap;
@@ -37,6 +38,7 @@ public class TimeLineRead {
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
                     node = graph.newNode(0,0);
 
                     for(int i=0;i<1_000_010;i++) {
@@ -54,7 +56,16 @@ public class TimeLineRead {
 
         @TearDown
         public void tearDown() {
-            graph.disconnect(null);
+            node.free();
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
         }
     }
 

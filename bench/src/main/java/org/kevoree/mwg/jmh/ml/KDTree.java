@@ -21,10 +21,14 @@ public class KDTree {
         KDNode root;
         int counter;
 
+        long startAvailableSpace;
+
+
+
         @Param(value = {"false","true"})
         boolean useHeap;
 
-        @Param("5000000")
+        @Param("10000000")
         long cacheSize;
 
         @Setup
@@ -41,12 +45,14 @@ public class KDTree {
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
+
                     root = (KDNode) graph.newTypedNode(0,0,KDNode.NAME);
                     root.set(KDNode.DISTANCE_THRESHOLD,1e-30);
 
-                    values=new Node[1_000_000];
+                    values=new Node[1_000_100];
 
-                    for(int i=0;i<1_000_000;i++){
+                    for(int i=0;i<1_000_100;i++){
                         double[] v= new double[dim];
                         for(int j=0;j<dim;j++){
                             v[j]=random.nextDouble();
@@ -59,12 +65,31 @@ public class KDTree {
             });
         }
 
+        @TearDown
+        public void end() {
+            for(int i=0;i<values.length;i++) {
+                values[i].free();
+            }
+            Graph graph = root.graph();
+            root.free();
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
+
+        }
+
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(10)
-    @Warmup(iterations = 1, batchSize = 100)
+    @Fork(1)
+    @Warmup(iterations = 0)
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)

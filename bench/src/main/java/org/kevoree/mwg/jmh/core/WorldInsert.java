@@ -18,6 +18,7 @@ public class WorldInsert {
         Node node;
         int counter;
         long previousWorld = 0L;
+        long startAvailableSpace;
 
         @Param(value = {"false","true"})
         boolean useHeap;
@@ -37,6 +38,7 @@ public class WorldInsert {
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
                     node = graph.newNode(0,0);
                 }
             });
@@ -44,7 +46,16 @@ public class WorldInsert {
 
         @TearDown
         public void tearDown() {
-            graph.disconnect(null);
+            node.free();
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
         }
     }
 

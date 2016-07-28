@@ -16,7 +16,8 @@ public class LookupNodes {
     public static class Parameter {
         Graph graph;
         Node root;
-        long[] children;
+        Node[] children;
+        long startAvailableSpace;
 
         int counter;
 
@@ -43,11 +44,12 @@ public class LookupNodes {
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
+                    startAvailableSpace = graph.space().available();
                     root = graph.newNode(0,0);
-                    children = new long[nbChildren];
+                    children = new Node[nbChildren];
 
                     for(int i=0;i<nbChildren;i++) {
-                        children[i] = graph.newNode(0,0).id();
+                        children[i] = graph.newNode(0,0);
                     }
                 }
             });
@@ -55,7 +57,19 @@ public class LookupNodes {
 
         @TearDown
         public void tearDown() {
-            graph.disconnect(null);
+            for(int i=0;i<children.length;i++) {
+                children[i].free();
+            }
+
+            graph.save(new Callback<Boolean>() {
+                @Override
+                public void on(Boolean result) {
+                    long endAvailableSpace = graph.space().available();
+                    if(endAvailableSpace != startAvailableSpace) {
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                    }
+                }
+            });
         }
     }
 
@@ -67,7 +81,7 @@ public class LookupNodes {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchLookupNodes(Parameter parameter) {
-        parameter.graph.lookup(0,0,parameter.children[parameter.counter],null);
+        parameter.graph.lookup(0,0,parameter.children[parameter.counter].id(),null);
         parameter.counter++;
     }
 }

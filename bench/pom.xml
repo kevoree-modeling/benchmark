@@ -13,16 +13,7 @@
 
     <artifactId>bench</artifactId>
 
-    <properties>
-        <mwg.version>7-SNAPSHOT</mwg.version>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.kevoree.mwg</groupId>
-            <artifactId>core</artifactId>
-            <version>${mwg.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.kevoree.mwg.plugins</groupId>

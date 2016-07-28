@@ -1,14 +1,8 @@
 package simpleTest;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.junit.Test;
-import org.kevoree.mwg.benchmark.rest.RestAPI;
-
 public class MyTest {
 
-    @Test
+   /* @Test
     public void test() {
         RestAPI restAPI = new RestAPI();
         restAPI.start(12345);
@@ -46,5 +40,5 @@ public class MyTest {
         }
 
         restAPI.stop();
-    }
+    }*/
 }
