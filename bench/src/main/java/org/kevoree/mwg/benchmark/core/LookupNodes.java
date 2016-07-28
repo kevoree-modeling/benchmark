@@ -60,13 +60,14 @@ public class LookupNodes {
             for(int i=0;i<children.length;i++) {
                 children[i].free();
             }
+            root.free();
 
             graph.save(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
                     if(endAvailableSpace != startAvailableSpace) {
-                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
             });
@@ -81,7 +82,12 @@ public class LookupNodes {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchLookupNodes(Parameter parameter) {
-        parameter.graph.lookup(0,0,parameter.children[parameter.counter].id(),null);
+        parameter.graph.lookup(0, 0, parameter.children[parameter.counter].id(), new Callback<Node>() {
+            @Override
+            public void on(Node result) {
+                result.free();
+            }
+        });
         parameter.counter++;
     }
 }

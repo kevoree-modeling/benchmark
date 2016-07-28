@@ -48,7 +48,7 @@ public class NewNodes {
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
                     if(endAvailableSpace != startAvailableSpace) {
-                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (endAvailableSpace - startAvailableSpace));
+                        throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
             });
