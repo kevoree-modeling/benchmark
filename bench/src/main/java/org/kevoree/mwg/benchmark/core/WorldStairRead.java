@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.core;
+package org.kevoree.mwg.benchmark.core;
 
 import org.mwg.Callback;
 import org.mwg.Graph;
@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ludovicmouline on 26/07/16.
  */
-public class TimeLineRead {
-
+public class WorldStairRead {
     @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
         Node node;
         int counter;
+        long[] worlds;
         long startAvailableSpace;
 
         @Param(value = {"false","true"})
@@ -25,6 +25,7 @@ public class TimeLineRead {
 
         @Param("5000000")
         long cacheSize;
+
 
         @Setup
         public void setup() {
@@ -35,20 +36,23 @@ public class TimeLineRead {
             }
             graph = graphBuilder.build();
 
+            worlds = new long[1_000_010];
+
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
                     node = graph.newNode(0,0);
 
-                    for(int i=0;i<1_000_010;i++) {
-                        node.jump(i, new Callback<Node>() {
+                    worlds[0] = 0L;
+                    for(int i=1;i<1_000_010;i++) {
+                        graph.lookup(worlds[i], i, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
-                                result.set("value",23);
-                                result.free();
+                                result.set("value",55);
                             }
                         });
+
                     }
                 }
             });
@@ -76,8 +80,8 @@ public class TimeLineRead {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchTimeLineRead(Parameter param) {
-        param.node.jump(param.counter, new Callback<Node>() {
+    public void benchWorldStairRead(Parameter param) {
+        param.graph.lookup(param.worlds[param.worlds.length - 1], param.counter, param.node.id(), new Callback<Node>() {
             @Override
             public void on(Node result) {
                 result.get("value");
@@ -86,4 +90,5 @@ public class TimeLineRead {
         });
         param.counter++;
     }
+
 }

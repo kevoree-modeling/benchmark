@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.core;
+package org.kevoree.mwg.benchmark.core;
 
 import org.mwg.Callback;
 import org.mwg.Graph;
@@ -8,26 +8,24 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-public class AddRelation {
-
+/**
+ * Created by ludovicmouline on 26/07/16.
+ */
+public class WorldRead {
     @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
-        Node root;
-        Node[] children;
+        Node node;
+        int counter;
+        long[] worlds;
         long startAvailableSpace;
 
-        int counter;
-
-        //todo put offheap when the Node.add() offheap implementation will be fixed
-        @Param(value = {"true"})
+        @Param(value = {"false","true"})
         boolean useHeap;
 
         @Param("5000000")
         long cacheSize;
 
-        @Param("1000010")
-        int nbChildren;
 
         @Setup
         public void setup() {
@@ -38,15 +36,23 @@ public class AddRelation {
             }
             graph = graphBuilder.build();
 
+            worlds = new long[1_000_010];
+
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    root = graph.newNode(0,0);
-                    children = new Node[nbChildren];
+                    node = graph.newNode(0,0);
 
-                    for(int i=0;i<nbChildren;i++) {
-                        children[i] = graph.newNode(0,0);
+                    worlds[0] = 0L;
+                    for(int i=1;i<1_000_010;i++) {
+                        graph.lookup(worlds[i], 0, node.id(), new Callback<Node>() {
+                            @Override
+                            public void on(Node result) {
+                                result.set("value",55);
+                            }
+                        });
+
                     }
                 }
             });
@@ -54,10 +60,7 @@ public class AddRelation {
 
         @TearDown
         public void tearDown() {
-            for(int i=0;i<children.length;i++) {
-                children[i].free();
-            }
-
+            node.free();
             graph.save(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
@@ -77,8 +80,15 @@ public class AddRelation {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchAddRelation(Parameter parameter) {
-        parameter.root.add("childs",parameter.children[parameter.counter]);
-        parameter.counter++;
+    public void benchWorldRead(Parameter param) {
+        param.graph.lookup(param.worlds[param.counter], 0, param.node.id(), new Callback<Node>() {
+            @Override
+            public void on(Node result) {
+                result.get("value");
+                result.free();
+            }
+        });
+        param.counter++;
     }
+
 }

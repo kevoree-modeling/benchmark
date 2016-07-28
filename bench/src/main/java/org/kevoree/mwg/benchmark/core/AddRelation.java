@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.core;
+package org.kevoree.mwg.benchmark.core;
 
 import org.mwg.Callback;
 import org.mwg.Graph;
@@ -8,23 +8,26 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ludovicmouline on 26/07/16.
- */
-public class WorldInsert {
+public class AddRelation {
+
     @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
-        Node node;
-        int counter;
-        long previousWorld = 0L;
+        Node root;
+        Node[] children;
         long startAvailableSpace;
 
-        @Param(value = {"false","true"})
+        int counter;
+
+        //todo put offheap when the Node.add() offheap implementation will be fixed
+        @Param(value = {"true"})
         boolean useHeap;
 
         @Param("5000000")
         long cacheSize;
+
+        @Param("1000010")
+        int nbChildren;
 
         @Setup
         public void setup() {
@@ -39,14 +42,22 @@ public class WorldInsert {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    node = graph.newNode(0,0);
+                    root = graph.newNode(0,0);
+                    children = new Node[nbChildren];
+
+                    for(int i=0;i<nbChildren;i++) {
+                        children[i] = graph.newNode(0,0);
+                    }
                 }
             });
         }
 
         @TearDown
         public void tearDown() {
-            node.free();
+            for(int i=0;i<children.length;i++) {
+                children[i].free();
+            }
+
             graph.save(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
@@ -66,16 +77,8 @@ public class WorldInsert {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchWorldInsert(Parameter param) {
-        param.previousWorld = param.graph.fork(param.previousWorld);
-        param.graph.lookup(param.previousWorld, 0, param.node.id(), new Callback<Node>() {
-            @Override
-            public void on(Node result) {
-                result.set("value",55);
-                param.node.free();
-                param.node = result;
-            }
-        });
-        param.counter++;
+    public void benchAddRelation(Parameter parameter) {
+        parameter.root.add("childs",parameter.children[parameter.counter]);
+        parameter.counter++;
     }
 }

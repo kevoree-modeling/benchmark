@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.core;
+package org.kevoree.mwg.benchmark.core;
 
 import org.mwg.Callback;
 import org.mwg.Graph;

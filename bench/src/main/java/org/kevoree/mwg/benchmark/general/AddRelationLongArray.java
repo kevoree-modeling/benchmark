@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.general;
+package org.kevoree.mwg.benchmark.general;
 
 import org.openjdk.jmh.annotations.*;
 

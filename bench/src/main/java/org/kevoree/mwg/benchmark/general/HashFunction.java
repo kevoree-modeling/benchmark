@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.general;
+package org.kevoree.mwg.benchmark.general;
 
 import org.mwg.core.utility.PrimitiveHelper;
 import org.openjdk.jmh.annotations.*;

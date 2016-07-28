@@ -1,4 +1,4 @@
-package org.kevoree.mwg.jmh.general;
+package org.kevoree.mwg.benchmark.general;
 
 import org.kevoree.mwg.benchmark.storage.utils.KDNodeJava;
 import org.mwg.ml.common.distance.EuclideanDistance;
