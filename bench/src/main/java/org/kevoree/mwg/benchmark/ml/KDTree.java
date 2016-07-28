@@ -7,6 +7,10 @@ import org.mwg.Node;
 import org.mwg.ml.MLPlugin;
 import org.mwg.ml.common.structure.KDNode;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -88,13 +92,20 @@ public class KDTree {
 
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(1)
+    @Fork(3)
     @Warmup(iterations = 0)
-    @Measurement(iterations = 1, batchSize = 1_000_000)
+    @Measurement(iterations = 1, batchSize = 100000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchKDTree(Parameter param) {
         param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
         param.counter++;
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(KDTree.class.getSimpleName())
+                .build();
+        new Runner(opt).run();
     }
 }

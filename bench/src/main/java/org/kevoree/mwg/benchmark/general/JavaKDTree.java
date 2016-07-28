@@ -3,6 +3,10 @@ package org.kevoree.mwg.benchmark.general;
 import org.kevoree.mwg.benchmark.utils.KDNodeJava;
 import org.mwg.ml.common.distance.EuclideanDistance;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -48,5 +52,12 @@ public class JavaKDTree {
     public Object javaKDTree(Parameter parameter) {
         parameter.root.insert(parameter.keys,parameter.value,null);
         return null;
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(JavaKDTree.class.getSimpleName())
+                .build();
+        new Runner(opt).run();
     }
 }

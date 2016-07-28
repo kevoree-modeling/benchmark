@@ -1,7 +1,12 @@
 package org.kevoree.mwg.benchmark.general;
 
+import org.kevoree.mwg.benchmark.core.WorldInsert;
 import org.mwg.core.utility.PrimitiveHelper;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +33,13 @@ public class HashFunction {
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long javaHashFunction(Parameters parameters) {
         return PrimitiveHelper.tripleHash((byte)0,parameters.v1,parameters.v2,parameters.v3,parameters.cacheSize);
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(HashFunction.class.getSimpleName())
+                .build();
+        new Runner(opt).run();
     }
 
 }

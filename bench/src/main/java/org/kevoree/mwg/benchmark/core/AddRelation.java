@@ -5,6 +5,10 @@ import org.mwg.Graph;
 import org.mwg.GraphBuilder;
 import org.mwg.Node;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -82,5 +86,12 @@ public class AddRelation {
     public void benchAddRelation(Parameter parameter) {
         parameter.root.add("childs",parameter.children[parameter.counter]);
         parameter.counter++;
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(AddRelation.class.getSimpleName())
+                .build();
+        new Runner(opt).run();
     }
 }
