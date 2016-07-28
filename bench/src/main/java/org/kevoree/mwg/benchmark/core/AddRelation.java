@@ -58,6 +58,8 @@ public class AddRelation {
                 children[i].free();
             }
 
+            root.free();
+
             graph.save(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
