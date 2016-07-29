@@ -54,6 +54,7 @@ public class WorldStairRead {
                             @Override
                             public void on(Node result) {
                                 result.set("value",55);
+                                result.free();
                             }
                         });
 
