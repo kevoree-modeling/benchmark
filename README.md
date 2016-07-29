@@ -37,7 +37,7 @@ The storage docker has be made using lmouline/storage docker, built with [Docker
 docker run -it lmouline/storage --name bench-storage -p 9876:9876
 [ctrl-C]
 docker exec -t bench-storage /etc/init.d/storage-daemon start
-`
+```
 
 # Manage the Java server daemon:
 Start it: `/etc/init.d/storage-daemon start`
