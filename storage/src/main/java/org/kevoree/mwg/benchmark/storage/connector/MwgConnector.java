@@ -16,10 +16,10 @@ public class MwgConnector implements Connector {
     public void process(String jsonData) {
         List<BenchJsonBenchmark> benchsData = JSON.parseArray(jsonData,BenchJsonBenchmark.class);
 
-        System.out.println(benchsData.size());
+       /* System.out.println(benchsData.size());
         for(BenchJsonBenchmark bench : benchsData) {
             System.out.println(bench.getBenchmark());
-        }
+        }*/
 
     }
 }

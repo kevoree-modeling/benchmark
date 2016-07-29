@@ -4,6 +4,7 @@ package org.kevoree.mwg.benchmark.storage.rest;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.kevoree.mwg.benchmark.storage.connector.CSVConnector;
 import org.kevoree.mwg.benchmark.storage.connector.Connector;
 import org.kevoree.mwg.benchmark.storage.connector.MwgConnector;
 
@@ -17,7 +18,8 @@ public class RestAPI implements HttpHandler{
 
     public RestAPI() {
         _connectors = new Connector[] {
-                new MwgConnector()
+                new MwgConnector(),
+                new CSVConnector()
         };
     }
 
