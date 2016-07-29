@@ -50,6 +50,7 @@ public class TimeLineInsert {
 
         @TearDown
         public void tearDown() {
+            node.free();
             graph.save(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
