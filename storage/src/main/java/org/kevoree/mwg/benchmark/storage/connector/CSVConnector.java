@@ -25,7 +25,7 @@ public class CSVConnector implements Connector{
         System.out.println("[" + new Date() + "] Process data " + jsonData);
         List<BenchJsonBenchmark> benchsData = JSON.parseArray(jsonData,BenchJsonBenchmark.class);
 
-        File csv = new File(System.currentTimeMillis() + "-bench.csv");
+        File csv = new File(folder.getAbsolutePath() + "/" + System.currentTimeMillis() + "-bench.csv");
         try {
             csv.createNewFile();
 
@@ -39,11 +39,12 @@ public class CSVConnector implements Connector{
                 double score;
                 BenchJsonMetrics metrics = bench.getPrimaryMetric();
                 if(metrics.getScoreUnit().equals("s/op")) {
-                    score = metrics.getScore() / bench.getMeasurementBatchSize();
+                    score = bench.getMeasurementBatchSize() / metrics.getScore();
                 } else {
                     score = metrics.getScore();
                 }
-                toWrite.append(String.format("%1$,.2f",score)).append("\n");
+                toWrite.append(String.format("%1$,.2f",score))
+                        .append("\n");
                 writer.append(toWrite.toString());
             }
             writer.flush();
