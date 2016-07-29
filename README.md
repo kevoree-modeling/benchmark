@@ -45,3 +45,8 @@ Stop it: `/etc/init.d/storage-daemon start` <br>
 Reload it: `/etc/init.d/storage-daemon reload` <br>
 The reload action get the jar file in `storage/exec` and launch it. <br>
 To put the storage jar file here, after a `mvn install`, just execute `storage/deploy.sh` script. <br>
+
+#Get the Bench data (as CSV file)
+To get the CSV files containing a resume of bench results, connect to `build` machine and find the files in `/home/kluster/bench-results/mwg-bench`.
+There is one file per bench (so two per day). The file name is created with this java code: 
+`System.currentTimeMillis() + "-bench.csv"`
