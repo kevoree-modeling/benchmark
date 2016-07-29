@@ -29,10 +29,10 @@ wget --header="Content-Type:application/json" --post-file benchmark.json http://
 
 # Everything in a docker
 The Jenkins build server and the Java server that collects the resulst, referenced as storage server, are in a docker on `build` machine.
-The Jenkins docker has be made using lmouline/myjenkins docker, built with [DockerBuild-Jenkins](). Running command: 
+The Jenkins docker has be made using lmouline/myjenkins docker, built with [DockerBuild-Jenkins](https://github.com/kevoree-modeling/benchmark/blob/master/dockerbuilds/jenkins/DockerBuild-Jenkins). Running command: 
 `docker run -p 8181:8080 -p 50001:50000 -v /home/kluster/jmh/jenkins:/var/jenkins_home --name bench-myjenkins -i myjenkins`
 
-The storage docker has be made using lmouline/storage docker, built with [DockerBuild-Storage](). Running command:
+The storage docker has be made using lmouline/storage docker, built with [DockerBuild-Storage](https://github.com/kevoree-modeling/benchmark/blob/master/dockerbuilds/storage/DockerBuild-Storage). Running command:
 ``` shell
 docker run -it lmouline/storage --name bench-storage -p 9876:9876
 [ctrl-C]
@@ -40,8 +40,13 @@ docker exec -t bench-storage /etc/init.d/storage-daemon start
 ```
 
 # Manage the Java server daemon:
-Start it: `/etc/init.d/storage-daemon start`
-Stop it: `/etc/init.d/storage-daemon start`
-Reload it: `/etc/init.d/storage-daemon reload`
-The reload action get the jar file in `storage/exec` and launch it.
-To put the storage jar file here, after a `mvn install`, just execute `storage/deploy.sh` script.
+Start it: `/etc/init.d/storage-daemon start` <br>
+Stop it: `/etc/init.d/storage-daemon start` <br>
+Reload it: `/etc/init.d/storage-daemon reload` <br>
+The reload action get the jar file in `storage/exec` and launch it. <br>
+To put the storage jar file here, after a `mvn install`, just execute `storage/deploy.sh` script. <br>
+
+#Get the Bench data (as CSV file)
+To get the CSV files containing a resume of bench results, connect to `build` machine and find the files in `/home/kluster/bench-results/mwg-bench`.
+There is one file per bench (so two per day). The file name is created with this java code: 
+`System.currentTimeMillis() + "-bench.csv"`
