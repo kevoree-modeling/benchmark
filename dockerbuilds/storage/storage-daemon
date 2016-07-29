@@ -1,0 +1,82 @@
+#!/bin/bash -e
+### BEGIN INIT INFO
+# Provides:          bench-server
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:
+# Default-Stop:
+# Short-Description: Manage a HHTP java server to process benchs results
+# Description:       Manage a HHTP java server to process benchs results
+### END INIT INFO
+# Author: Ludovic
+
+
+DESC="HTTP Server to process bench results"
+DAEMON="/opt/storage-daemon/execStorageBench.sh"
+DAEMONUSER="root"
+NAME="serverBench"
+PATH="/sbin:/bin:/usr/sbin:/usr/bin"
+PIDFILE="/opt/storage-daemon/serverBench.pid"
+
+test -x $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+d_start () {
+        log_daemon_msg "Starting system $daemon_NAME Daemon"
+	start-stop-daemon --start --name $daemon_NAME --start --chuid $DAEMONUSER --exec $DAEMON -- "/opt/storage-daemon" --pidfile $PIDFILE
+        log_end_msg $?
+}
+
+d_stop () {
+        log_daemon_msg "Stopping system $daemon_NAME Daemon"
+        start-stop-daemon --stop --pidfile $PIDFILE
+	log_end_msg $?
+}
+
+d_reload () {
+	log_daemon_msg "Reloading system $daemon_NAME Daemon"
+	d_stop
+	rm /opt/storage-daemon/server.jar
+	wget https://github.com/kevoree-modeling/benchmark/raw/master/storage/exec/server.jar
+	if [ -f ./server.jar ]
+	then
+		mv ./server.jar /opt/storage-daemon
+	else
+		echo "Reloading failed: ./server.jar is missing"
+		exit 1
+	fi
+	d_start
+}
+
+case "$1" in
+
+        start|stop)
+                d_${1}
+                ;;
+
+        restart)
+                        d_stop
+                        d_start
+                ;;
+
+        reload)
+		d_reload
+		;;
+
+        force-stop)
+                d_stop
+                killall -q $daemon_NAME || true
+                sleep 2
+                killall -q -9 $daemon_NAME || true
+                ;;
+
+        status)
+                status_of_proc -p $PIDFILE "java" && exit 0 || exit $?
+                ;;
+        *)
+                echo "Usage: /etc/init.d/$daemon_NAME {start|stop|force-stop|restart|reload|status}"
+                exit 1
+                ;;
+esac
+exit 0
