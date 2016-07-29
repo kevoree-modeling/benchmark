@@ -44,9 +44,9 @@ public class JavaKDTree {
 
 
     @Benchmark
-    @Fork(1)
+    @Fork(10)
     @Warmup(iterations = 1,batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1,batchSize = 1, time = 10, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1,batchSize = 1, time = 5, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public Object javaKDTree(Parameter parameter) {

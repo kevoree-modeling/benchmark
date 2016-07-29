@@ -92,9 +92,9 @@ public class KDTree {
 
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(3)
+    @Fork(10)
     @Warmup(iterations = 0)
-    @Measurement(iterations = 1, batchSize = 100000)
+    @Measurement(iterations = 1, batchSize = 100_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchKDTree(Parameter param) {

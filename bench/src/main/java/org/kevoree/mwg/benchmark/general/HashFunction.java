@@ -1,6 +1,5 @@
 package org.kevoree.mwg.benchmark.general;
 
-import org.kevoree.mwg.benchmark.core.WorldInsert;
 import org.mwg.core.utility.PrimitiveHelper;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -26,9 +25,9 @@ public class HashFunction {
     }
 
     @Benchmark
-    @Fork(1)
+    @Fork(10)
     @Warmup(iterations = 1,batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1,batchSize = 1, time = 10, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1,batchSize = 1, time = 5, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long javaHashFunction(Parameters parameters) {

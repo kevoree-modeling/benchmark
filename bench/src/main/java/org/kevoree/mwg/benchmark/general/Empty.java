@@ -1,6 +1,5 @@
 package org.kevoree.mwg.benchmark.general;
 
-import org.kevoree.mwg.benchmark.core.WorldInsert;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class Empty {
 
     @Benchmark
-    @Fork(1)
+    @Fork(10)
     @Warmup(iterations = 1,batchSize = 1, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1,batchSize = 1, time = 5, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)

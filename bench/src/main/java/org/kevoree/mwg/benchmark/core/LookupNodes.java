@@ -82,7 +82,7 @@ public class LookupNodes {
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
     @Warmup(iterations = 1, batchSize = 10)
-    @Measurement(iterations = 1, batchSize = 1_000)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchLookupNodes(Parameter parameter) {
@@ -98,6 +98,7 @@ public class LookupNodes {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(LookupNodes.class.getSimpleName())
+                .forks(1)
                 .build();
         new Runner(opt).run();
     }
