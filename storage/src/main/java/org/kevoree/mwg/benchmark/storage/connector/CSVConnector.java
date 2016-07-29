@@ -7,6 +7,7 @@ import org.kevoree.mwg.benchmark.storage.json.BenchJsonMetrics;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class CSVConnector implements Connector{
@@ -21,6 +22,7 @@ public class CSVConnector implements Connector{
 
     @Override
     public void process(String jsonData) {
+        System.out.println("[" + new Date() + "] Process data " + jsonData);
         List<BenchJsonBenchmark> benchsData = JSON.parseArray(jsonData,BenchJsonBenchmark.class);
 
         File csv = new File(System.currentTimeMillis() + "-bench.csv");

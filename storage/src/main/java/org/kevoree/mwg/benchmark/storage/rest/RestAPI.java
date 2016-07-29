@@ -11,6 +11,7 @@ import org.kevoree.mwg.benchmark.storage.connector.MwgConnector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 public class RestAPI implements HttpHandler{
     private Undertow _httpServer;
@@ -40,6 +41,7 @@ public class RestAPI implements HttpHandler{
     }
 
     public void handleRequest(HttpServerExchange exchange){
+        System.out.println("[" + new Date() + "] " + exchange.getRequestMethod() + " Request received: " + exchange.getRequestURL());
         if(exchange.getRequestMethod().equalToString("POST")) {
             if(exchange.isInIoThread()) {
                 exchange.dispatch(this);
