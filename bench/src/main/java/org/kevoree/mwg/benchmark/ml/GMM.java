@@ -27,7 +27,7 @@ public class GMM {
 
         long startAvailableSpace;
 
-        @Param(value = {"false","true"})
+        @Param(value = {"true"})
         boolean useHeap;
 
         @Param("1000000")
@@ -112,6 +112,8 @@ public class GMM {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(GMM.class.getSimpleName())
+                .forks(1)
+                .param("useHeap","false")
                 .build();
         new Runner(opt).run();
     }
