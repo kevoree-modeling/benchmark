@@ -10,6 +10,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +43,7 @@ public class WorldRead {
 
             worlds = new long[1_000_010];
 
+            Random rand = new Random();
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
@@ -50,10 +52,11 @@ public class WorldRead {
 
                     worlds[0] = 0L;
                     for(int i=1;i<1_000_010;i++) {
+                        worlds[i]=graph.fork(worlds[i-1]);
                         graph.lookup(worlds[i], 0, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
-                                result.set("value",55);
+                                result.set("value", rand.nextDouble());
                                 result.free();
                             }
                         });

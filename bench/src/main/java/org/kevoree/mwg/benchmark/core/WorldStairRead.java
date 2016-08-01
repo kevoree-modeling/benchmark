@@ -40,7 +40,7 @@ public class WorldStairRead {
             }
             graph = graphBuilder.build();
 
-            worlds = new long[1_000_010];
+            worlds = new long[10_010];
 
             graph.connect(new Callback<Boolean>() {
                 @Override
@@ -49,7 +49,8 @@ public class WorldStairRead {
                     node = graph.newNode(0,0);
 
                     worlds[0] = 0L;
-                    for(int i=1;i<1_000_010;i++) {
+                    for(int i=1;i<10_010;i++) {
+                        worlds[i]=graph.fork(worlds[i-1]);
                         graph.lookup(worlds[i], i, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
@@ -82,7 +83,7 @@ public class WorldStairRead {
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
     @Warmup(iterations = 1, batchSize = 10)
-    @Measurement(iterations = 1, batchSize = 1_000_000)
+    @Measurement(iterations = 1, batchSize = 10_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchWorldStairRead(Parameter param) {
