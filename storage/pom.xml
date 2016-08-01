@@ -91,7 +91,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.kevoree.mwg.plugins</groupId>
                 <artifactId>mavenplugin</artifactId>
                 <version>${mwg.version}</version>
@@ -107,7 +107,7 @@
                 <configuration>
                     <name>org.mwg.bench.Bench</name>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
         </plugins>
     </build>
