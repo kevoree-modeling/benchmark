@@ -1,18 +1,19 @@
 package org.kevoree.mwg.benchmark.storage.connector;
 
-import com.alibaba.fastjson.JSON;
-import org.kevoree.mwg.benchmark.storage.json.BenchJsonBenchmark;
-import org.kevoree.mwg.benchmark.storage.json.BenchJsonMetrics;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
+import java.util.Iterator;
 
 public class CSVConnector implements Connector{
 
-    String folderPath = "/home/mwg-bench";
+//    String folderPath = "/home/mwg-bench";
+    String folderPath = ".";
     File folder;
 
     public CSVConnector() {
@@ -22,8 +23,11 @@ public class CSVConnector implements Connector{
 
     @Override
     public void process(String jsonData) {
-        System.out.println("[" + new Date() + "] Process data " + jsonData);
-        List<BenchJsonBenchmark> benchsData = JSON.parseArray(jsonData,BenchJsonBenchmark.class);
+        System.out.println("[" + new Date() + "] Process data by VSCConnector");
+
+        JSONArray benchsData = new JSONArray(jsonData);
+
+
 
         File csv = new File(folder.getAbsolutePath() + "/" + System.currentTimeMillis() + "-bench.csv");
         try {
@@ -31,21 +35,50 @@ public class CSVConnector implements Connector{
 
             FileWriter writer = new FileWriter(csv);
             StringBuilder toWrite;
-            for(int i = 0; i< benchsData.size();i++) {
+            for(int i=0;i<benchsData.length();i++) {
+                JSONObject bench = benchsData.getJSONObject(i);
                 toWrite = new StringBuilder();
-                BenchJsonBenchmark bench = benchsData.get(i);
-                toWrite.append(bench.getBenchmark())
-                        .append(";");
-                double score;
-                BenchJsonMetrics metrics = bench.getPrimaryMetric();
-                if(metrics.getScoreUnit().equals("s/op")) {
-                    score = bench.getMeasurementBatchSize() / metrics.getScore();
-                } else {
-                    score = metrics.getScore();
+
+                toWrite.append(bench.getString("benchmark"))
+                        .append("(mode=")
+                        .append(bench.getString("mode"));
+
+                if(bench.getString("mode").equals("thrpt")) {
+                    toWrite.append(",time=")
+                            .append(bench.getString("measurementTime"));
+                } else if(bench.getString("mode").equals("ss")) {
+                    toWrite.append(",batchSize=")
+                            .append(bench.getInt("measurementBatchSize"));
                 }
-                toWrite.append(String.format("%1$,.2f",score))
+
+                try {
+                    JSONObject params = bench.getJSONObject("params");
+                    Iterator<String> itpNames = params.keys();
+                    while(itpNames.hasNext()) {
+                        String pName = itpNames.next();
+                        toWrite.append(",")
+                                .append(pName)
+                                .append("=")
+                                .append(params.getString(pName));
+                    }
+                }catch (JSONException ex) {
+                    //do nothing -> no params
+                }
+                toWrite.append(");");
+
+                double score;
+                JSONObject speedMetric = bench.getJSONObject("primaryMetric");
+                String speedUnit = speedMetric.getString("scoreUnit");
+                if(speedUnit.equals("s/op")) {
+                    score = bench.getInt("measurementBatchSize") / speedMetric.getDouble("score");
+                } else {
+                    score = speedMetric.getDouble("score");
+                }
+
+                toWrite.append(String.format("%1$,.6f",score))
                         .append("\n");
-                writer.append(toWrite.toString());
+                writer.write(toWrite.toString());
+
             }
             writer.flush();
             writer.close();

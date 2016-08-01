@@ -54,7 +54,6 @@ public class RestAPI implements HttpHandler{
             String line;
             try {
                 while((line = reader.readLine()) != null) {
-                    System.out.println(line);
                     jsonFile.append(line);
                 }
             } catch (IOException e) {
