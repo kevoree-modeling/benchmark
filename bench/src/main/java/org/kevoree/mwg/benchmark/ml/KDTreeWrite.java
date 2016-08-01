@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class KDTree {
+public class KDTreeWrite {
     @State(Scope.Thread)
     public static class Parameter {
         int dim=4;
@@ -55,9 +55,9 @@ public class KDTree {
                     root = (KDNode) graph.newTypedNode(0,0,KDNode.NAME);
                     root.set(KDNode.DISTANCE_THRESHOLD,1e-30);
 
-                    values=new Node[1_000_100];
+                    values=new Node[1_00_000];
 
-                    for(int i=0;i<1_000_100;i++){
+                    for(int i=0;i<1_00_000;i++){
                         double[] v= new double[dim];
                         for(int j=0;j<dim;j++){
                             v[j]=random.nextDouble();
@@ -105,8 +105,7 @@ public class KDTree {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(KDTree.class.getSimpleName())
-                .forks(1)
+                .include(KDTreeWrite.class.getSimpleName())
                 .build();
         new Runner(opt).run();
     }
