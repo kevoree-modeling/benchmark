@@ -6,32 +6,34 @@ import org.mwg.GraphBuilder;
 import org.mwg.Node;
 import org.mwg.ml.MLPlugin;
 import org.mwg.ml.algorithm.regression.PolynomialNode;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by assaad on 29/07/16.
  */
 public class PolynomialRead {
 
-//    @State(Scope.Thread)
+    @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
         PolynomialNode node;
         int counter;
         long startAvailableSpace;
 
-//        @Param(value = {"false","true"})
+        @Param(value = {"false","true"})
         boolean useHeap;
 
-//        @Param("5000000")
+        @Param("5000000")
         long cacheSize;
 
-//        @Setup
+        @Setup
         public void setup() {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize).withPlugin(new MLPlugin());
@@ -62,7 +64,7 @@ public class PolynomialRead {
 
         }
 
-//        @TearDown
+        @TearDown
         public void tearDown() {
             node.free();
             graph.save(new Callback<Boolean>() {
@@ -77,13 +79,13 @@ public class PolynomialRead {
         }
     }
 
-//    @Benchmark
-//    @BenchmarkMode(Mode.SingleShotTime)
-//    @Fork(10)
-//    @Warmup(iterations = 0, batchSize = 0)
-//    @Measurement(iterations = 1, batchSize = 1_000_000)
-//    @OutputTimeUnit(TimeUnit.SECONDS)
-//    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(10)
+    @Warmup(iterations = 0, batchSize = 0)
+    @Measurement(iterations = 1, batchSize = 1_000_000)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public void benchPolynomial(Parameter param) {
         param.node.jump(param.counter, new Callback<Node>() {
             @Override
