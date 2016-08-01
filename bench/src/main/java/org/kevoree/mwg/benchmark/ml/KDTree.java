@@ -29,7 +29,8 @@ public class KDTree {
 
 
 
-        @Param(value = {"false","true"})
+//        @Param(value = {"false","true"})
+        @Param("true")
         boolean useHeap;
 
         @Param("10000000")
@@ -105,6 +106,7 @@ public class KDTree {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(KDTree.class.getSimpleName())
+                .forks(1)
                 .build();
         new Runner(opt).run();
     }
