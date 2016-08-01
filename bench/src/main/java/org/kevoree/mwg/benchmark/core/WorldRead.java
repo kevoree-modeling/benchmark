@@ -43,7 +43,7 @@ public class WorldRead {
 
             worlds = new long[1_000_010];
 
-            Random rand = new Random();
+            Random rand = new Random(1256335488963325663L);
             graph.connect(new Callback<Boolean>() {
                 @Override
                 public void on(Boolean result) {
