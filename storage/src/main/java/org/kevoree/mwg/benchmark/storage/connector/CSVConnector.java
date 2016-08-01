@@ -12,8 +12,8 @@ import java.util.Iterator;
 
 public class CSVConnector implements Connector{
 
-//    String folderPath = "/home/mwg-bench";
-    String folderPath = ".";
+    String folderPath = "/home/mwg-bench";
+//    String folderPath = ".";
     File folder;
 
     public CSVConnector() {
