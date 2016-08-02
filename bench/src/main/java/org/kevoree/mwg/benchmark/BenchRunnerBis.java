@@ -74,186 +74,69 @@ public class BenchRunnerBis {
             BenchmarkListEntry bench = iterator.next();
             Optional<Map<String, String[]>> params = bench.getParams();
 
-            String[] keys = null;
-            String[][] values = null;
+            String[] keys;
+            String[][] values;
             //get all executions
-            {
-                if (params.hasValue()) {
-                    Map<String, String[]> paramsMap = params.get();
+            if (params.hasValue()) {
+                Map<String, String[]> paramsMap = params.get();
 
-                    int nbSolution = 1;
-                    {
-                        for (String[] paramValues : paramsMap.values()) {
-                            nbSolution *= paramValues.length;
-                        }
-                    }
-
-                    keys = new String[paramsMap.keySet().size()];
-                    {
-                        Iterator<String> itKey = paramsMap.keySet().iterator();
-                        int index = 0;
-                        while (itKey.hasNext()) {
-                            keys[index] = itKey.next();
-                            index++;
-                        }
-                    }
-
-                    values = new String[nbSolution][keys.length];
-                    {
-                        for (int sol = 0; sol < nbSolution; sol++) {
-                            int j = 1;
-                            int index = 0;
-                            String[] toAdd = new String[keys.length];
-                            for (String[] v : paramsMap.values()) {
-                                toAdd[index] = v[(sol / j) % v.length];
-                                index++;
-                                j *= v.length;
-                            }
-                            values[sol] = toAdd;
-                        }
-                    }
-
+                int nbSolution = 1;
+                for (String[] paramValues : paramsMap.values()) {
+                    nbSolution *= paramValues.length;
                 }
+
+
+                keys = new String[paramsMap.keySet().size()];
+                {
+                    Iterator<String> itKey = paramsMap.keySet().iterator();
+                    int index = 0;
+                    while (itKey.hasNext()) {
+                        keys[index] = itKey.next();
+                        index++;
+                    }
+                }
+
+                values = new String[nbSolution][keys.length];
+                for (int sol = 0; sol < nbSolution; sol++) {
+                    int j = 1;
+                    int index = 0;
+                    String[] toAdd = new String[keys.length];
+                    for (String[] v : paramsMap.values()) {
+                        toAdd[index] = v[(sol / j) % v.length];
+                        index++;
+                        j *= v.length;
+                    }
+                    values[sol] = toAdd;
+                }
+            } else {
+                keys= new String[0];
+                values = new String[1][0];
             }
 
             //Run and create
-            {
-                if(keys == null) {
-                    jsonBuilder.append(START_OBJ);
-                    //name
-                    jsonBuilder.append(START_STRING).append("name").append(END_STRING)
-                            .append(DATA_VALUE_SEP).append(START_STRING).append(bench.getUsername()).append(END_STRING)
-                            .append(DATA_SEP).append(EOL);
-                    //todo remove
-                    Options options = new OptionsBuilder().include(bench.getUsername()).forks(1).shouldFailOnError(true).build();
-                    StringBuffer error = null;
-                    RunResult runResult = null;
-                    try {
-                        Runner runner = new Runner(options);
-                        Collection<RunResult> results = runner.run();
-                        Iterator<RunResult> resultIterator = results.iterator();
-                        if(resultIterator.hasNext()) {
-                            runResult = resultIterator.next();
-                            if(resultIterator.hasNext()) {
-                                throw new RuntimeException("There is more than one result. Please check the runner code" + bench.getUsername());
-                            }
-                        } else {
-                            throw new RuntimeException("There is more than one result " + results.size() + ". Please check the runner code: " + bench.getUsername());
-                        }
-                        runner.runSystemGC();
-                    } catch (RunnerException exception) {
-                        StringWriter sw = new StringWriter();
-                        if(exception.getCause() == null) {
-                            exception.printStackTrace(new PrintWriter(sw));
-                        } else {
-                            exception.getCause().printStackTrace(new PrintWriter(sw));
-                        }
-                        error = sw.getBuffer();
-                    }
-
-                    jsonBuilder.append(START_STRING).append("status").append(END_STRING).append(DATA_VALUE_SEP);
-                    if(error == null) {
-                        // "succeed", \n
-                        // "score" :
-                        jsonBuilder.append(START_STRING).append("succeed").append(END_STRING).append(DATA_SEP).append(EOL)
-                                .append(START_STRING).append("score").append(END_STRING).append(DATA_VALUE_SEP);
-
-                        double score = runResult.getPrimaryResult().getScore();
-                        if(runResult.getParams().getMode().shortLabel().equals(Mode.SingleShotTime.shortLabel())) {
-                            score = runResult.getParams().getMeasurement().getBatchSize() / score;
-                        }
-                        jsonBuilder.append(score).append(DATA_SEP).append(EOL);
-                        jsonBuilder.append(START_STRING).append("scoreUnit").append(END_STRING).append(DATA_VALUE_SEP)
-                                .append(START_STRING).append("op/s").append(END_STRING).append(EOL);
-
-                    } else {
-                        // "failed",\n
-                        // "reason": "exception caught",\n
-                        jsonBuilder.append(START_STRING).append("failed").append(END_STRING).append(DATA_SEP).append(EOL)
-                                .append(START_STRING).append("reason").append(END_STRING).append(DATA_VALUE_SEP)
-                                .append(START_STRING)
-                                .append(putEndOfLineCharacter(error.toString())).append(END_STRING).append(EOL);
-                    }
-
-                    jsonBuilder.append(END_OBJ);
-                    if(iterator.hasNext()) {
-                        jsonBuilder.append(DATA_SEP);
-                    }
-                    jsonBuilder.append(EOL);
-
-                } else {
-                    for(int nbExec=0;nbExec<values.length;nbExec++) {
-                        jsonBuilder.append(START_OBJ);
-                        //name
-                        jsonBuilder.append(START_STRING).append("name").append(END_STRING)
-                                .append(DATA_VALUE_SEP).append(START_STRING).append(bench.getUsername()).append(END_STRING)
-                                .append(DATA_SEP).append(EOL);
-                        //todo remove
-                        ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).forks(1).shouldFailOnError(true);
-                        for(int numKey=0;numKey<keys.length;numKey++) {
-                            optionsBuilder.param(keys[numKey],values[nbExec][numKey]);
-                        }
-                        Options options = optionsBuilder.build();
-                        StringBuffer error = null;
-                        RunResult runResult = null;
-                        try {
-                            Runner runner = new Runner(options);
-                            Collection<RunResult> results = runner.run();
-                            Iterator<RunResult> resultIterator = results.iterator();
-                            if(resultIterator.hasNext()) {
-                                runResult = resultIterator.next();
-                                if(resultIterator.hasNext()) {
-                                    throw new RuntimeException("There is more than one result. Please check the runner code" + bench.getUsername());
-                                }
-                            } else {
-                                throw new RuntimeException("There is more than one result " + results.size() + ". Please check the runner code: " + bench.getUsername());
-                            }
-                            runner.runSystemGC();
-                        } catch (RunnerException exception) {
-                            StringWriter sw = new StringWriter();
-                            if(exception.getCause() == null) {
-                                exception.printStackTrace(new PrintWriter(sw));
-                            } else {
-                                exception.getCause().printStackTrace(new PrintWriter(sw));
-                            }
-                            error = sw.getBuffer();
-                        }
-
-                        jsonBuilder.append(START_STRING).append("status").append(END_STRING).append(DATA_VALUE_SEP);
-                        if(error == null) {
-                            // "succeed", \n
-                            // "score" :
-                            jsonBuilder.append(START_STRING).append("succeed").append(END_STRING).append(DATA_SEP).append(EOL)
-                                    .append(START_STRING).append("score").append(END_STRING).append(DATA_VALUE_SEP);
-
-                            double score = runResult.getPrimaryResult().getScore();
-                            if(runResult.getParams().getMode().shortLabel().equals(Mode.SingleShotTime.shortLabel())) {
-                                score = runResult.getParams().getMeasurement().getBatchSize() / score;
-                            }
-                            jsonBuilder.append(score).append(DATA_SEP).append(EOL);
-                            jsonBuilder.append(START_STRING).append("scoreUnit").append(END_STRING).append(DATA_VALUE_SEP)
-                                    .append(START_STRING).append("op/s").append(END_STRING).append(EOL);
-
-                        } else {
-                            // "failed",\n
-                            // "reason": "exception caught",\n
-                            jsonBuilder.append(START_STRING).append("failed").append(END_STRING).append(DATA_SEP).append(EOL)
-                                    .append(START_STRING).append("reason").append(END_STRING).append(DATA_VALUE_SEP)
-                                    .append(START_STRING)
-                                    .append(putEndOfLineCharacter(error.toString())).append(END_STRING).append(EOL);
-                        }
-
-                        jsonBuilder.append(END_OBJ);
-                        if(nbExec <= values.length - 2){
-                            jsonBuilder.append(DATA_SEP);
-                        }
-                        jsonBuilder.append(EOL);
-                    }
-
-                    if(iterator.hasNext()) {
-                        jsonBuilder.append(DATA_SEP);
-                    }
+            for(int nbExec=0;nbExec<values.length;nbExec++) {
+                jsonBuilder.append(START_OBJ);
+                //name
+                jsonBuilder.append(START_STRING).append("name").append(END_STRING)
+                        .append(DATA_VALUE_SEP).append(START_STRING).append(bench.getUsername()).append(END_STRING)
+                        .append(DATA_SEP).append(EOL);
+                //todo remove
+                ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).forks(1).shouldFailOnError(true);
+                for(int numKey=0;numKey<keys.length;numKey++) {
+                    optionsBuilder.param(keys[numKey],values[nbExec][numKey]);
                 }
+                Options options = optionsBuilder.build();
+                runBench(jsonBuilder, bench.getUsername(), options);
+
+                jsonBuilder.append(END_OBJ);
+                if(nbExec <= values.length - 2){
+                    jsonBuilder.append(DATA_SEP);
+                }
+                jsonBuilder.append(EOL);
+            }
+
+            if(iterator.hasNext()) {
+                jsonBuilder.append(DATA_SEP);
             }
 
         }
@@ -261,5 +144,56 @@ public class BenchRunnerBis {
         jsonBuilder.append(END_ARRAY);
         System.out.println(jsonBuilder);
 
+    }
+
+    private static void runBench(StringBuilder jsonBuilder, String benchName, Options options) {
+        StringBuffer error = null;
+        RunResult runResult = null;
+        try {
+            Runner runner = new Runner(options);
+            Collection<RunResult> results = runner.run();
+            Iterator<RunResult> resultIterator = results.iterator();
+            if(resultIterator.hasNext()) {
+                runResult = resultIterator.next();
+                if(resultIterator.hasNext()) {
+                    throw new RuntimeException("There is more than one result. Please check the runner code" + benchName);
+                }
+            } else {
+                throw new RuntimeException("There is more than one result " + results.size() + ". Please check the runner code: " + benchName);
+            }
+            runner.runSystemGC();
+        } catch (RunnerException exception) {
+            StringWriter sw = new StringWriter();
+            if(exception.getCause() == null) {
+                exception.printStackTrace(new PrintWriter(sw));
+            } else {
+                exception.getCause().printStackTrace(new PrintWriter(sw));
+            }
+            error = sw.getBuffer();
+        }
+
+        jsonBuilder.append(START_STRING).append("status").append(END_STRING).append(DATA_VALUE_SEP);
+        if(error == null) {
+            // "succeed", \n
+            // "score" :
+            jsonBuilder.append(START_STRING).append("succeed").append(END_STRING).append(DATA_SEP).append(EOL)
+                    .append(START_STRING).append("score").append(END_STRING).append(DATA_VALUE_SEP);
+
+            double score = runResult.getPrimaryResult().getScore();
+            if(runResult.getParams().getMode().shortLabel().equals(Mode.SingleShotTime.shortLabel())) {
+                score = runResult.getParams().getMeasurement().getBatchSize() / score;
+            }
+            jsonBuilder.append(score).append(DATA_SEP).append(EOL);
+            jsonBuilder.append(START_STRING).append("scoreUnit").append(END_STRING).append(DATA_VALUE_SEP)
+                    .append(START_STRING).append("op/s").append(END_STRING).append(EOL);
+
+        } else {
+            // "failed",\n
+            // "reason": "exception caught",\n
+            jsonBuilder.append(START_STRING).append("failed").append(END_STRING).append(DATA_SEP).append(EOL)
+                    .append(START_STRING).append("reason").append(END_STRING).append(DATA_VALUE_SEP)
+                    .append(START_STRING)
+                    .append(putEndOfLineCharacter(error.toString())).append(END_STRING).append(EOL);
+        }
     }
 }
