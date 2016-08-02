@@ -10,6 +10,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class WorldInsert{
@@ -20,6 +21,7 @@ public class WorldInsert{
         int counter;
         long previousWorld = 0L;
         long startAvailableSpace;
+        Random random;
 
         @Param(value = {"false","true"})
         boolean useHeap;
@@ -29,6 +31,7 @@ public class WorldInsert{
 
         @Setup
         public void setup() {
+            random=  new Random(1256335488963325663L);
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
             if(!useHeap) {
@@ -72,7 +75,7 @@ public class WorldInsert{
         param.graph.lookup(param.previousWorld, 0, param.node.id(), new Callback<Node>() {
             @Override
             public void on(Node result) {
-                result.set("value",55);
+                result.set("value",param.random.nextDouble());
                 param.node.free();
                 param.node = result;
             }
