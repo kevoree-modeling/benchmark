@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by assaad on 29/07/16.
- */
 public class GMM {
     @State(Scope.Thread)
     public static class Parameter {
@@ -104,9 +101,9 @@ public class GMM {
     @Measurement(iterations = 1, batchSize = 100_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchGMM(Parameter param) {
+    public Object benchGMM(Parameter param) {
         param.profiler.learnVector(param.vecs.get(param.counter),null);
-        param.counter++;
+        return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

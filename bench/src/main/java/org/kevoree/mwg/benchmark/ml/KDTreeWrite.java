@@ -98,9 +98,9 @@ public class KDTreeWrite {
     @Measurement(iterations = 1, batchSize = 100_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchKDTree(Parameter param) {
+    public Object benchKDTree(Parameter param) {
         param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
-        param.counter++;
+        return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

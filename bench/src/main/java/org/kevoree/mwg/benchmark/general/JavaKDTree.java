@@ -11,7 +11,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class JavaKDTree {
+public class JavaKDTree{
 
     @State(Scope.Thread)
     public static class Parameter {

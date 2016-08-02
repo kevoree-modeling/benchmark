@@ -83,9 +83,9 @@ public class AddRelation {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchAddRelation(Parameter parameter) {
+    public int benchAddRelation(Parameter parameter) {
         parameter.root.add("childs",parameter.children[parameter.counter]);
-        parameter.counter++;
+        return parameter.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

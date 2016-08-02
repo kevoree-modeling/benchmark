@@ -12,9 +12,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ludovicmouline on 26/07/16.
- */
 public class WorldRead {
     @State(Scope.Thread)
     public static class Parameter {
@@ -50,6 +47,7 @@ public class WorldRead {
 
                     worlds[0] = 0L;
                     for(int i=1;i<1_000_010;i++) {
+                        worlds[i] = graph.fork(worlds[0]);
                         graph.lookup(worlds[i], 0, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
@@ -85,7 +83,7 @@ public class WorldRead {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchWorldRead(Parameter param) {
+    public Object benchWorldRead(Parameter param) {
         param.graph.lookup(param.worlds[param.counter], 0, param.node.id(), new Callback<Node>() {
             @Override
             public void on(Node result) {
@@ -93,7 +91,10 @@ public class WorldRead {
                 result.free();
             }
         });
-        param.counter++;
+//        if(!param.useHeap) {
+//            System.err.println(param.counter);
+//        }
+        return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

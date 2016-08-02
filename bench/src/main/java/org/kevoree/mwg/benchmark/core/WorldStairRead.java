@@ -12,9 +12,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ludovicmouline on 26/07/16.
- */
 public class WorldStairRead {
     @State(Scope.Thread)
     public static class Parameter {
@@ -50,6 +47,7 @@ public class WorldStairRead {
 
                     worlds[0] = 0L;
                     for(int i=1;i<1_000_010;i++) {
+                        worlds[i] = graph.fork(worlds[i-1]);
                         graph.lookup(worlds[i], i, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
@@ -82,10 +80,10 @@ public class WorldStairRead {
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
     @Warmup(iterations = 1, batchSize = 10)
-    @Measurement(iterations = 1, batchSize = 1_000_000)
+    @Measurement(iterations = 1, batchSize = 10_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchWorldStairRead(Parameter param) {
+    public Object benchWorldStairRead(Parameter param) {
         param.graph.lookup(param.worlds[param.worlds.length - 1], param.counter, param.node.id(), new Callback<Node>() {
             @Override
             public void on(Node result) {
@@ -93,7 +91,13 @@ public class WorldStairRead {
                 result.free();
             }
         });
-        param.counter++;
+
+       /* if(!param.useHeap) {
+            if(param.counter % 10 == 0) {
+                System.err.println(param.counter);
+            }
+        }*/
+        return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

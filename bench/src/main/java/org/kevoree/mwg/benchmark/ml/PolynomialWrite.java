@@ -14,9 +14,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by assaad on 29/07/16.
- */
+
 public class PolynomialWrite {
 
     @State(Scope.Thread)
@@ -78,7 +76,7 @@ public class PolynomialWrite {
     @Measurement(iterations = 1, batchSize = 1_000_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public void benchPolynomial(Parameter param) {
+    public Object benchPolynomial(Parameter param) {
         param.node.jump(param.counter, new Callback<Node>() {
             @Override
             public void on(Node result) {
@@ -86,7 +84,7 @@ public class PolynomialWrite {
                 result.free();
             }
         });
-        param.counter++;
+        return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {

@@ -12,9 +12,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by ludovicmouline on 26/07/16.
- */
+
 public class NewNodes {
 
     @State(Scope.Thread)
@@ -70,7 +68,7 @@ public class NewNodes {
         Node insert = param.graph.newNode(0,0);
         insert.set("value",33);
         insert.free();
-        return null;
+        return "A string";
     }
 
     public static void main(String[] args) throws RunnerException {
