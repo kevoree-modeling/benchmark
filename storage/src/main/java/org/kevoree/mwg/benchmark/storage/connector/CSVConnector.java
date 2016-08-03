@@ -45,6 +45,7 @@ public class CSVConnector implements Connector{
                 try {
                     JSONObject params = bench.getJSONObject("params");
                     Iterator<String> itpNames = params.keys();
+                    toWrite.append("(");
                     while(itpNames.hasNext()) {
                         String pName = itpNames.next();
                         toWrite.append(",")
@@ -52,10 +53,11 @@ public class CSVConnector implements Connector{
                                 .append("=")
                                 .append(params.getString(pName));
                     }
+                    toWrite.append(")");
                 }catch (JSONException ex) {
                     //do nothing -> no params
                 }
-                toWrite.append(");");
+                toWrite.append(";");
 
                 double score;
                 if(bench.getString("status").equals("succeed")) {
