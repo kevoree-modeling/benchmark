@@ -130,8 +130,8 @@ public class BenchRunner {
                 jsonBuilder.append(START_STRING).append("name").append(END_STRING)
                         .append(DATA_VALUE_SEP).append(START_STRING).append(bench.getUsername()).append(END_STRING)
                         .append(DATA_SEP).append(EOL);
-                //todo remove
-                ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).forks(1).shouldFailOnError(true);
+
+                ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).shouldFailOnError(true);
                 StringBuilder paramsStr = null;
                 if(keys.length > 0) {
                     jsonBuilder.append(START_STRING).append("params").append(END_STRING).append(DATA_VALUE_SEP)
