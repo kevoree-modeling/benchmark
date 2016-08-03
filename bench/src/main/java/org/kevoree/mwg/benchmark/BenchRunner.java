@@ -1,6 +1,7 @@
 package org.kevoree.mwg.benchmark;
 
 
+import org.kevoree.mwg.benchmark.utils.RestCall;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.BenchmarkList;
@@ -15,8 +16,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.VerboseMode;
 import org.openjdk.jmh.util.Optional;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,6 +32,8 @@ public class BenchRunner {
     private static final String START_ARRAY = "[";
     private static final String END_ARRAY = "]";
     private static final String DATA_VALUE_SEP = ":";
+    private static final String INIT_FAILED_MSG = "One or more benchmark(s) had encountered error, and fail on error was requested";
+
 
     private static String putEndOfLineCharacter(String toModify) {
         char[] toReturn = new char[toModify.length()];
@@ -58,7 +60,12 @@ public class BenchRunner {
         return new String(toReturn);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        if(args.length != 2) {
+            System.err.println("Wrong arguments number: should be 2: [logFolder] [http address to push data]");
+            System.exit(2);
+        }
+
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append(START_ARRAY).append(EOL);
 
@@ -70,6 +77,8 @@ public class BenchRunner {
             benchmarks = list.find(out, options.getIncludes(), options.getExcludes());
         }
 
+        StringBuilder failedBench = new StringBuilder();
+        failedBench.append(INIT_FAILED_MSG);
         for (Iterator<BenchmarkListEntry> iterator = benchmarks.iterator(); iterator.hasNext(); ) {
             BenchmarkListEntry bench = iterator.next();
             Optional<Map<String, String[]>> params = bench.getParams();
@@ -113,6 +122,7 @@ public class BenchRunner {
                 values = new String[1][0];
             }
 
+
             //Run and create
             for(int nbExec=0;nbExec<values.length;nbExec++) {
                 jsonBuilder.append(START_OBJ);
@@ -122,11 +132,28 @@ public class BenchRunner {
                         .append(DATA_SEP).append(EOL);
                 //todo remove
                 ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).forks(1).shouldFailOnError(true);
+                StringBuilder paramsStr = null;
+                if(keys.length > 0) {
+                    jsonBuilder.append(START_STRING).append("params").append(END_STRING).append(DATA_VALUE_SEP)
+                            .append(START_OBJ).append(EOL);
+                    paramsStr = new StringBuilder();
+                }
                 for(int numKey=0;numKey<keys.length;numKey++) {
                     optionsBuilder.param(keys[numKey],values[nbExec][numKey]);
+                    jsonBuilder.append(START_STRING).append(keys[numKey]).append(END_STRING).append(DATA_VALUE_SEP)
+                            .append(START_STRING).append(values[nbExec][numKey]).append(END_STRING);
+                    paramsStr.append(keys[numKey]).append("=").append(values[nbExec][numKey]);
+                    if(numKey <= keys.length-2) {
+                        jsonBuilder.append(DATA_SEP);
+                        paramsStr.append(DATA_SEP);
+                    }
+                    jsonBuilder.append(EOL);
+                }
+                if(keys.length > 0) {
+                    jsonBuilder.append(END_OBJ).append(DATA_SEP).append(EOL);
                 }
                 Options options = optionsBuilder.build();
-                runBench(jsonBuilder, bench.getUsername(), options);
+                runBench(jsonBuilder, bench.getUsername(), options, failedBench, paramsStr);
 
                 jsonBuilder.append(END_OBJ);
                 if(nbExec <= values.length - 2){
@@ -142,11 +169,26 @@ public class BenchRunner {
         }
 
         jsonBuilder.append(END_ARRAY);
-        System.out.println(jsonBuilder);
+
+
+        File logFolder = new File(args[0]);
+        logFolder.mkdirs();
+
+        File logFile = new File(logFolder.getAbsolutePath() + "/" + System.currentTimeMillis() + "-bench.json");
+        FileWriter logWriter = new FileWriter(logFile);
+        logWriter.append(jsonBuilder);
+        logWriter.flush();
+        logWriter.close();
+
+        RestCall.save(args[1],jsonBuilder.toString());
+
+        if(failedBench.length() > INIT_FAILED_MSG.length()) {
+            throw new RuntimeException(failedBench.toString());
+        }
 
     }
 
-    private static void runBench(StringBuilder jsonBuilder, String benchName, Options options) {
+    private static void runBench(StringBuilder jsonBuilder, String benchName, Options options, StringBuilder failedBenchs, StringBuilder params) {
         StringBuffer error = null;
         RunResult runResult = null;
         try {
@@ -170,6 +212,9 @@ public class BenchRunner {
                 exception.getCause().printStackTrace(new PrintWriter(sw));
             }
             error = sw.getBuffer();
+
+            failedBenchs.append(benchName).append(START_ARRAY).append(params).append(END_ARRAY).append(EOL)
+                    .append(error).append(EOL);
         }
 
         jsonBuilder.append(START_STRING).append("status").append(END_STRING).append(DATA_VALUE_SEP);
