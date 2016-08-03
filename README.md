@@ -5,7 +5,7 @@ This repository is used to continuously benchmark MwDB, using [jmh](http://openj
 
 # Benchmark process
 Twice a day (around noon and midnight), a [Jenkins](https://jenkins.io/) server pulls MwDB repository and builds it. Then, it processes all the benchmarks. If the MwG build or the benchmark project build fail, the bench will also fail, without process the bench. 
-If one or more bench fail, the build will also failed at the end. BUT, all the bench are processed, the results are store as normal and send to the storage server. A JSON file is created with all the bench results and is they succeed or not. If a bench failed, we add the stacktrace in the Json file.
+If one or more bench fail, the build will also failed at the end. BUT, all the bench are processed, the results are store as normal and send to the storage server. A JSON file is created with all the bench results and is they succeed or not. If a bench failed, we add the stacktrace in the Json file. This file could be find in `/var/bench-logs` in docker that contains Jenkins.
 
 Currently, the storage server create a CSV file to sum-up the results. If a bench had failed, we put -1 as value.
 
