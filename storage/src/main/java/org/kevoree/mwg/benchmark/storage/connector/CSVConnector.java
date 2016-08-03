@@ -39,17 +39,8 @@ public class CSVConnector implements Connector{
                 JSONObject bench = benchsData.getJSONObject(i);
                 toWrite = new StringBuilder();
 
-                toWrite.append(bench.getString("benchmark"))
-                        .append("(mode=")
-                        .append(bench.getString("mode"));
+                toWrite.append(bench.getString("name"));
 
-                if(bench.getString("mode").equals("thrpt")) {
-                    toWrite.append(",time=")
-                            .append(bench.getString("measurementTime"));
-                } else if(bench.getString("mode").equals("ss")) {
-                    toWrite.append(",batchSize=")
-                            .append(bench.getInt("measurementBatchSize"));
-                }
 
                 try {
                     JSONObject params = bench.getJSONObject("params");
@@ -67,12 +58,10 @@ public class CSVConnector implements Connector{
                 toWrite.append(");");
 
                 double score;
-                JSONObject speedMetric = bench.getJSONObject("primaryMetric");
-                String speedUnit = speedMetric.getString("scoreUnit");
-                if(speedUnit.equals("s/op")) {
-                    score = bench.getInt("measurementBatchSize") / speedMetric.getDouble("score");
+                if(bench.getString("status").equals("succeed")) {
+                        score = bench.getDouble("score");
                 } else {
-                    score = speedMetric.getDouble("score");
+                    score = -1;
                 }
 
                 toWrite.append(String.format("%1$,.6f",score))
