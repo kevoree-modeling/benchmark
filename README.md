@@ -4,14 +4,17 @@ Benchmark
 This repository is used to continuously benchmark MwDB, using [jmh](http://openjdk.java.net/projects/code-tools/jmh/).
 
 # Benchmark process
-Twice a day (around noon and midnight), a [Jenkins](https://jenkins.io/) server pulls MwDB repository and builds it. Then, it processes all the benchmarks. If the build fails or one of the benchmark fails, all the process will fail. (We currently do this to detect without big effort any problem in the bench process). We use the Json output format to create a bench result file, that we send to a Java server using post request (created with Wget). Below, you can find the shell script that makes all these steps (**Last update: 29th July, 2016**)
+Twice a day (around noon and midnight), a [Jenkins](https://jenkins.io/) server pulls MwDB repository and builds it. Then, it processes all the benchmarks. If the MwG build or the benchmark project build fail, the bench will also fail, without process the bench. 
+If one or more bench fail, the build will also failed at the end. BUT, all the bench are processed, the results are store as normal and send to the storage server. A JSON file is created with all the bench results and is they succeed or not. If a bench failed, we add the stacktrace in the Json file.
 
+Currently, the storage server create a CSV file to sum-up the results. If a bench had failed, we put -1 as value.
+
+Benchmarck process:
 ``` shell
 #!/bin/bash
 #Clone and build last version of MwDB
 git clone https://github.com/kevoree-modeling/mwDB.git
 cd mwDB
-#git reset --soft 93700d8
 mvn clean install
 
 #CLone and build last verisons of benchmarks
@@ -19,10 +22,9 @@ git clone https://github.com/kevoree-modeling/benchmark.git
 cd benchmark
 mvn clean install
 #Executes the benchmarks and create a JSON file with the results
-java -jar bench/target/mwg-benchmark.jar -rf json -rff benchmark.json -v EXTRA -foe true
+cd bench/target
+java -jar bench-1.0-SNAPSHOT-jar-with-dependencies.jar /var/bench-logs http://build:9876
 
-#Send the json
-wget --header="Content-Type:application/json" --post-file benchmark.json http://0.0.0.0:9876
 ```
 
 > Next sections is for intern purpose
