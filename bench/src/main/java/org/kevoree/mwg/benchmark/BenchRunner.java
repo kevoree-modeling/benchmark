@@ -155,7 +155,7 @@ public class BenchRunner {
                 paramsStr.append("batchSize").append("=").append(bench.getMeasurementBatchSize().orElse(-1));
 
                 jsonBuilder.append(END_OBJ).append(DATA_SEP).append(EOL);
-                Options options = optionsBuilder.forks(1).build();
+                Options options = optionsBuilder.build();
                 runBench(jsonBuilder, bench.getUsername(), options, failedBench, paramsStr);
 
                 jsonBuilder.append(END_OBJ);
