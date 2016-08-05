@@ -5,7 +5,7 @@ import org.mwg.Graph;
 import org.mwg.GraphBuilder;
 import org.mwg.Node;
 import org.mwg.ml.MLPlugin;
-import org.mwg.ml.common.structure.KDNode;
+import org.mwg.ml.common.structure.KDTree;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class KDTreeWrite {
+public class KDTreeTaskInsert {
     @State(Scope.Thread)
     public static class Parameter {
         int dim=4;
         ArrayList<double[]> vecs=new ArrayList<double[]>();
         Node[] values;
-        KDNode root;
+        KDTree root;
         int counter;
 
         long startAvailableSpace;
@@ -52,8 +52,8 @@ public class KDTreeWrite {
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
 
-                    root = (KDNode) graph.newTypedNode(0,0,KDNode.NAME);
-                    root.set(KDNode.DISTANCE_THRESHOLD,1e-30);
+                    root = (KDTree) graph.newTypedNode(0,0, KDTree.NAME);
+                    root.set(KDTree.DISTANCE_THRESHOLD,1e-30);
 
                     values=new Node[1_00_000];
 
@@ -98,14 +98,14 @@ public class KDTreeWrite {
     @Measurement(iterations = 1, batchSize = 100_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
-    public Object benchKDTree(Parameter param) {
+    public Object KDTreeTaskInsert(Parameter param) {
         param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
         return param.counter++;
     }
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(KDTreeWrite.class.getSimpleName())
+                .include(KDTreeTaskInsert.class.getSimpleName())
                 .build();
         new Runner(opt).run();
     }

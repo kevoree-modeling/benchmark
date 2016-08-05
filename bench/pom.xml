@@ -22,6 +22,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kevoree.mwg.plugins</groupId>
+            <artifactId>ml</artifactId>
+            <version>${mwg.version}</version>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
             <groupId>com.mashape.unirest</groupId>
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>
