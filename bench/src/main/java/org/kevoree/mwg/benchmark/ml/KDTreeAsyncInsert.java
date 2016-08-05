@@ -4,7 +4,6 @@ import org.mwg.Callback;
 import org.mwg.Graph;
 import org.mwg.GraphBuilder;
 import org.mwg.Node;
-import org.mwg.ml.MLPlugin;
 import org.mwg.ml.MLTestPlugin;
 import org.mwg.ml.common.structure.KDTree;
 import org.mwg.ml.common.structure.KDTreeAsync;
