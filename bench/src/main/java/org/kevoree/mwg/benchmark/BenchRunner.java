@@ -133,26 +133,29 @@ public class BenchRunner {
 
                 ChainedOptionsBuilder optionsBuilder = new OptionsBuilder().include(bench.getUsername()).shouldFailOnError(true);
                 StringBuilder paramsStr = null;
-                if(keys.length > 0) {
-                    jsonBuilder.append(START_STRING).append("params").append(END_STRING).append(DATA_VALUE_SEP)
-                            .append(START_OBJ).append(EOL);
-                    paramsStr = new StringBuilder();
-                }
+                jsonBuilder.append(START_STRING).append("params").append(END_STRING).append(DATA_VALUE_SEP)
+                        .append(START_OBJ).append(EOL);
+                paramsStr = new StringBuilder();
+
+
                 for(int numKey=0;numKey<keys.length;numKey++) {
                     optionsBuilder.param(keys[numKey],values[nbExec][numKey]);
                     jsonBuilder.append(START_STRING).append(keys[numKey]).append(END_STRING).append(DATA_VALUE_SEP)
                             .append(START_STRING).append(values[nbExec][numKey]).append(END_STRING);
                     paramsStr.append(keys[numKey]).append("=").append(values[nbExec][numKey]);
-                    if(numKey <= keys.length-2) {
                         jsonBuilder.append(DATA_SEP);
                         paramsStr.append(DATA_SEP);
-                    }
                     jsonBuilder.append(EOL);
                 }
-                if(keys.length > 0) {
-                    jsonBuilder.append(END_OBJ).append(DATA_SEP).append(EOL);
-                }
-                Options options = optionsBuilder.build();
+
+                jsonBuilder.append(START_STRING).append("batchSize").append(END_STRING).append(DATA_VALUE_SEP)
+                        .append(START_STRING).append(bench.getMeasurementBatchSize().orElse(-1)).append(END_STRING)
+                        .append(EOL);
+
+                paramsStr.append("batchSize").append("=").append(bench.getMeasurementBatchSize().orElse(-1));
+
+                jsonBuilder.append(END_OBJ).append(DATA_SEP).append(EOL);
+                Options options = optionsBuilder.forks(1).build();
                 runBench(jsonBuilder, bench.getUsername(), options, failedBench, paramsStr);
 
                 jsonBuilder.append(END_OBJ);

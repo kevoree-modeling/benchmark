@@ -48,10 +48,13 @@ public class CSVConnector implements Connector{
                     toWrite.append("(");
                     while(itpNames.hasNext()) {
                         String pName = itpNames.next();
-                        toWrite.append(",")
-                                .append(pName)
+                         toWrite.append(pName)
                                 .append("=")
                                 .append(params.getString(pName));
+
+                        if(itpNames.hasNext()) {
+                            toWrite.append(",");
+                        }
                     }
                     toWrite.append(")");
                 }catch (JSONException ex) {
