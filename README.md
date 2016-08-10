@@ -15,11 +15,15 @@ Benchmarck process:
 #Clone and build last version of MwDB
 git clone https://github.com/kevoree-modeling/mwDB.git
 cd mwDB
+echo "mwDB commit ID: "
+git rev-parse --short HEAD
 mvn clean install
 
 #CLone and build last verisons of benchmarks
 git clone https://github.com/kevoree-modeling/benchmark.git
 cd benchmark
+echo "benchmark commit ID: "
+git rev-parse --short HEAD
 mvn clean install
 #Executes the benchmarks and create a JSON file with the results
 cd bench/target
