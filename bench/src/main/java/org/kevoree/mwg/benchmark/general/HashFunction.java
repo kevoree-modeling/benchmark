@@ -1,6 +1,6 @@
 package org.kevoree.mwg.benchmark.general;
 
-import org.mwg.core.utility.PrimitiveHelper;
+import org.mwg.utility.HashHelper;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -31,7 +31,7 @@ public class HashFunction {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public long javaHashFunction(Parameters parameters) {
-        return PrimitiveHelper.tripleHash((byte)0,parameters.v1,parameters.v2,parameters.v3,parameters.cacheSize);
+        return HashHelper.tripleHash((byte)0,parameters.v1,parameters.v2,parameters.v3,parameters.cacheSize);
     }
 
     public static void main(String[] args) throws RunnerException {
