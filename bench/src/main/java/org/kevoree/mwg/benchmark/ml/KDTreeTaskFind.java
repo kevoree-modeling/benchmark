@@ -1,5 +1,6 @@
 package org.kevoree.mwg.benchmark.ml;
 
+import org.kevoree.mwg.benchmark.utils.MWGUtil;
 import org.mwg.Callback;
 import org.mwg.Graph;
 import org.mwg.GraphBuilder;
@@ -41,7 +42,7 @@ public class KDTreeTaskFind {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize).withPlugin(new MLPlugin());
             if(!useHeap) {
-                graphBuilder.withOffHeapMemory();
+                MWGUtil.offHeap(graphBuilder);
             }
             Graph graph = graphBuilder.build();
 

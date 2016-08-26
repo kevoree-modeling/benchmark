@@ -1,5 +1,6 @@
 package org.kevoree.mwg.benchmark.core;
 
+import org.kevoree.mwg.benchmark.utils.MWGUtil;
 import org.mwg.Callback;
 import org.mwg.Graph;
 import org.mwg.GraphBuilder;
@@ -31,7 +32,7 @@ public class NewNodes {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
             if(!useHeap) {
-                graphBuilder.withOffHeapMemory();
+                MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
 
