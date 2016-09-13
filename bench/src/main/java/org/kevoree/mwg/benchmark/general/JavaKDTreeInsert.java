@@ -1,7 +1,7 @@
 package org.kevoree.mwg.benchmark.general;
 
 import org.kevoree.mwg.benchmark.utils.KDNodeJava;
-import org.mwg.ml.common.distance.EuclideanDistance;
+import org.mwg.structure.distance.EuclideanDistance;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -27,7 +27,7 @@ public class JavaKDTreeInsert {
             random = new Random(1256335488963325663L);
             root=new KDNodeJava();
             root.setThreshold(1e-30);
-            root.setDistance(new EuclideanDistance());
+            root.setDistance(EuclideanDistance.instance());
 
             keys = new double[4];
         }

@@ -2,7 +2,7 @@ package org.kevoree.mwg.benchmark.utils;
 
 
 import org.mwg.Callback;
-import org.mwg.ml.common.distance.Distance;
+import org.mwg.structure.distance.Distance;
 
 public class KDNodeJava {
     KDNodeJava right;

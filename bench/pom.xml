@@ -23,7 +23,7 @@
 
         <dependency>
             <groupId>org.kevoree.mwg.plugins</groupId>
-            <artifactId>ml</artifactId>
+            <artifactId>structure</artifactId>
             <version>${mwg.version}</version>
             <type>test-jar</type>
         </dependency>

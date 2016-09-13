@@ -6,7 +6,7 @@ import org.mwg.Graph;
 import org.mwg.GraphBuilder;
 import org.mwg.Node;
 import org.mwg.ml.MLPlugin;
-import org.mwg.ml.common.structure.KDTree;
+import org.mwg.structure.tree.KDTree;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -65,7 +65,7 @@ public class KDTreeTaskFind {
                         }
                         vecs.add(v);
                         values[i]= graph.newNode(0,0);
-                        root.insert(v,values[i],null);
+                        root.insertWith(v,values[i],null);
                     }
 
                 }
@@ -101,7 +101,7 @@ public class KDTreeTaskFind {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object KDTreeTaskFind(Parameter param) {
-        param.root.insert(param.vecs.get(param.counter), param.values[param.counter], null);
+        param.root.insertWith(param.vecs.get(param.counter), param.values[param.counter], null);
         return param.counter++;
     }
 
