@@ -85,7 +85,7 @@ public class AddRelation {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public int benchAddRelation(Parameter parameter) {
-        parameter.root.add("childs",parameter.children[parameter.counter]);
+        parameter.root.addToRelation("childs",parameter.children[parameter.counter]);
         return parameter.counter++;
     }
 

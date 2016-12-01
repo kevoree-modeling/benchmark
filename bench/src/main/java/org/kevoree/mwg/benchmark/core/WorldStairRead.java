@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.core;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -22,7 +19,7 @@ public class WorldStairRead {
         long[] worlds;
         long startAvailableSpace;
 
-        @Param(value = {"false","true"})
+        @Param(value = {"false", "true"})
         boolean useHeap;
 
         @Param("5000000")
@@ -33,7 +30,7 @@ public class WorldStairRead {
         public void setup() {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
-            if(!useHeap) {
+            if (!useHeap) {
                 MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
@@ -44,16 +41,16 @@ public class WorldStairRead {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    node = graph.newNode(0,0);
+                    node = graph.newNode(0, 0);
 
                     worlds[0] = 0L;
 
-                    for(int i=1;i<10_010;i++) {
-                        worlds[i] = graph.fork(worlds[i-1]);
+                    for (int i = 1; i < 10_010; i++) {
+                        worlds[i] = graph.fork(worlds[i - 1]);
                         graph.lookup(worlds[i], i, node.id(), new Callback<Node>() {
                             @Override
                             public void on(Node result) {
-                                result.set("value",55);
+                                result.set("value", Type.INT, 55);
                                 result.free();
                             }
                         });
@@ -70,7 +67,7 @@ public class WorldStairRead {
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
-                    if(endAvailableSpace != startAvailableSpace) {
+                    if (endAvailableSpace != startAvailableSpace) {
                         throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }

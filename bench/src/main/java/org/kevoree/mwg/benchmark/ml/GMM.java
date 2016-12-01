@@ -4,6 +4,7 @@ import org.kevoree.mwg.benchmark.utils.MWGUtil;
 import org.mwg.Callback;
 import org.mwg.Graph;
 import org.mwg.GraphBuilder;
+import org.mwg.Type;
 import org.mwg.ml.MLPlugin;
 import org.mwg.ml.algorithm.profiling.GaussianMixtureNode;
 import org.openjdk.jmh.annotations.*;
@@ -55,12 +56,12 @@ public class GMM {
                     double threshold =1.6;
                     double[] err = new double[]{0.5 * 0.5, 10 * 10};
 
-                    profiler.set(GaussianMixtureNode.LEVEL, maxlev); //max levels allowed
-                    profiler.set(GaussianMixtureNode.WIDTH, width); //each level can have 24 components
-                    profiler.set(GaussianMixtureNode.COMPRESSION_FACTOR, factor); //Factor of times before compressing, so at 24x10=240, compressions executes
-                    profiler.set(GaussianMixtureNode.COMPRESSION_ITER, iter); //iteration in the compression function, keep default
-                    profiler.set(GaussianMixtureNode.THRESHOLD, threshold); //At the lower level, at higher level will be: threashold + level/2 -> number of variance tolerated to insert in the same node
-                    profiler.set(GaussianMixtureNode.PRECISION, err); //Minimum covariance in both axis
+                    profiler.set(GaussianMixtureNode.LEVEL, Type.INT, maxlev); //max levels allowed
+                    profiler.set(GaussianMixtureNode.WIDTH, Type.INT, width); //each level can have 24 components
+                    profiler.set(GaussianMixtureNode.COMPRESSION_FACTOR, Type.DOUBLE, factor); //Factor of times before compressing, so at 24x10=240, compressions executes
+                    profiler.set(GaussianMixtureNode.COMPRESSION_ITER, Type.INT, iter); //iteration in the compression function, keep default
+                    profiler.set(GaussianMixtureNode.THRESHOLD, Type.DOUBLE, threshold); //At the lower level, at higher level will be: threashold + level/2 -> number of variance tolerated to insert in the same node
+                    profiler.set(GaussianMixtureNode.PRECISION, Type.DOUBLE_ARRAY, err); //Minimum covariance in both axis
 
 
                     double[] v= new double[2];

@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.ml;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.mwg.ml.MLPlugin;
 import org.mwg.structure.tree.KDTree;
 import org.openjdk.jmh.annotations.*;
@@ -54,7 +51,7 @@ public class KDTreeTaskFind {
                     startAvailableSpace = graph.space().available();
 
                     root = (KDTree) graph.newTypedNode(0,0, KDTree.NAME);
-                    root.set(KDTree.DISTANCE_THRESHOLD,1e-30);
+                    root.set(KDTree.DISTANCE_THRESHOLD, Type.DOUBLE,1e-30);
 
                     values=new Node[1_00_000];
 

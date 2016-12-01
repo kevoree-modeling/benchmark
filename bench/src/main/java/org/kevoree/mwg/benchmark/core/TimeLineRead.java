@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.core;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -44,10 +41,10 @@ public class TimeLineRead {
                     node = graph.newNode(0,0);
 
                     for(int i=0;i<1_000_010;i++) {
-                        node.jump(i, new Callback<Node>() {
+                        node.travelInTime(i, new Callback<Node>() {
                             @Override
                             public void on(Node result) {
-                                result.set("value",23);
+                                result.set("value", Type.INT,23);
                                 result.free();
                             }
                         });
@@ -79,7 +76,7 @@ public class TimeLineRead {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object benchTimeLineRead(Parameter param) {
-        param.node.jump(param.counter, new Callback<Node>() {
+        param.node.travelInTime(param.counter, new Callback<Node>() {
             @Override
             public void on(Node result) {
                 result.get("value");

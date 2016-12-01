@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.core;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -21,7 +18,7 @@ public class NewNodes {
         Graph graph;
         long startAvailableSpace;
 
-        @Param(value = {"false","true"})
+        @Param(value = {"false", "true"})
         boolean useHeap;
 
         @Param("5000000")
@@ -31,7 +28,7 @@ public class NewNodes {
         public void setup() {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
-            if(!useHeap) {
+            if (!useHeap) {
                 MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
@@ -50,7 +47,7 @@ public class NewNodes {
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
-                    if(endAvailableSpace != startAvailableSpace) {
+                    if (endAvailableSpace != startAvailableSpace) {
                         throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
@@ -66,8 +63,8 @@ public class NewNodes {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object benchNewNodes(Parameter param) {
-        Node insert = param.graph.newNode(0,0);
-        insert.set("value",33);
+        Node insert = param.graph.newNode(0, 0);
+        insert.set("value", Type.INT, 33);
         insert.free();
         return "A string";
     }

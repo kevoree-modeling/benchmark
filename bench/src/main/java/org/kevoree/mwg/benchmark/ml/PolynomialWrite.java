@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.ml;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.mwg.ml.MLPlugin;
 import org.mwg.ml.algorithm.regression.PolynomialNode;
 import org.openjdk.jmh.annotations.*;
@@ -24,9 +21,9 @@ public class PolynomialWrite {
         PolynomialNode node;
         int counter;
         long startAvailableSpace;
-        double[] vals=new double[1000000];
+        double[] vals = new double[1000000];
 
-        @Param(value = {"false","true"})
+        @Param(value = {"false", "true"})
         boolean useHeap;
 
         @Param("5000000")
@@ -36,7 +33,7 @@ public class PolynomialWrite {
         public void setup() {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize).withPlugin(new MLPlugin());
-            if(!useHeap) {
+            if (!useHeap) {
                 MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
@@ -45,10 +42,10 @@ public class PolynomialWrite {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    node = (PolynomialNode)graph.newTypedNode(0,0, PolynomialNode.NAME);
-                    node.set(PolynomialNode.PRECISION,0.1);
-                    for(int i=0;i<vals.length;i++){
-                        vals[i]=2*i*i-5*i;
+                    node = (PolynomialNode) graph.newTypedNode(0, 0, PolynomialNode.NAME);
+                    node.set(PolynomialNode.PRECISION, Type.DOUBLE, 0.1);
+                    for (int i = 0; i < vals.length; i++) {
+                        vals[i] = 2 * i * i - 5 * i;
                     }
                 }
             });
@@ -62,7 +59,7 @@ public class PolynomialWrite {
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
-                    if(endAvailableSpace != startAvailableSpace) {
+                    if (endAvailableSpace != startAvailableSpace) {
                         throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
@@ -78,10 +75,10 @@ public class PolynomialWrite {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object benchPolynomial(Parameter param) {
-        param.node.jump(param.counter, new Callback<Node>() {
+        param.node.travelInTime(param.counter, new Callback<Node>() {
             @Override
             public void on(Node result) {
-                result.set(PolynomialNode.VALUE,param.vals[param.counter]);
+                result.set(PolynomialNode.VALUE, Type.DOUBLE, param.vals[param.counter]);
                 result.free();
             }
         });

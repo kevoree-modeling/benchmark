@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.core;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -14,7 +11,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class WorldInsert{
+public class WorldInsert {
     @State(Scope.Thread)
     public static class Parameter {
         Graph graph;
@@ -24,7 +21,7 @@ public class WorldInsert{
         long startAvailableSpace;
         Random random;
 
-        @Param(value = {"false","true"})
+        @Param(value = {"false", "true"})
         boolean useHeap;
 
         @Param("5000000")
@@ -32,10 +29,10 @@ public class WorldInsert{
 
         @Setup
         public void setup() {
-            random=  new Random(1256335488963325663L);
+            random = new Random(1256335488963325663L);
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
-            if(!useHeap) {
+            if (!useHeap) {
                 MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
@@ -44,7 +41,7 @@ public class WorldInsert{
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    node = graph.newNode(0,0);
+                    node = graph.newNode(0, 0);
                 }
             });
         }
@@ -56,7 +53,7 @@ public class WorldInsert{
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
-                    if(endAvailableSpace != startAvailableSpace) {
+                    if (endAvailableSpace != startAvailableSpace) {
                         throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
@@ -76,7 +73,7 @@ public class WorldInsert{
         param.graph.lookup(param.previousWorld, 0, param.node.id(), new Callback<Node>() {
             @Override
             public void on(Node result) {
-                result.set("value",param.random.nextDouble());
+                result.set("value", Type.DOUBLE, param.random.nextDouble());
                 param.node.free();
                 param.node = result;
             }

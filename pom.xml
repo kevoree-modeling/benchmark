@@ -16,7 +16,7 @@
     <name>Benchmark :: Root</name>
 
     <properties>
-        <mwg.version>8-SNAPSHOT</mwg.version>
+        <mwg.version>11-SNAPSHOT</mwg.version>
     </properties>
 
     <dependencies>

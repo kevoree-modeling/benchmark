@@ -1,10 +1,7 @@
 package org.kevoree.mwg.benchmark.core;
 
 import org.kevoree.mwg.benchmark.utils.MWGUtil;
-import org.mwg.Callback;
-import org.mwg.Graph;
-import org.mwg.GraphBuilder;
-import org.mwg.Node;
+import org.mwg.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -13,7 +10,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimeLineInsert  {
+public class TimeLineInsert {
 
     @State(Scope.Thread)
     public static class Parameter {
@@ -22,7 +19,7 @@ public class TimeLineInsert  {
         int counter;
         long startAvailableSpace;
 
-        @Param(value = {"false","true"})
+        @Param(value = {"false", "true"})
         boolean useHeap;
 
         @Param("5000000")
@@ -32,7 +29,7 @@ public class TimeLineInsert  {
         public void setup() {
             GraphBuilder graphBuilder = new GraphBuilder();
             graphBuilder.withMemorySize(cacheSize);
-            if(!useHeap) {
+            if (!useHeap) {
                 MWGUtil.offHeap(graphBuilder);
             }
             graph = graphBuilder.build();
@@ -41,7 +38,7 @@ public class TimeLineInsert  {
                 @Override
                 public void on(Boolean result) {
                     startAvailableSpace = graph.space().available();
-                    node = graph.newNode(0,0);
+                    node = graph.newNode(0, 0);
                 }
             });
         }
@@ -53,7 +50,7 @@ public class TimeLineInsert  {
                 @Override
                 public void on(Boolean result) {
                     long endAvailableSpace = graph.space().available();
-                    if(endAvailableSpace != startAvailableSpace) {
+                    if (endAvailableSpace != startAvailableSpace) {
                         throw new RuntimeException("Memory leak detected: startAvailableSpace=" + startAvailableSpace + "; endAvailableSpace=" + endAvailableSpace + "; diff= " + (startAvailableSpace - endAvailableSpace));
                     }
                 }
@@ -69,10 +66,10 @@ public class TimeLineInsert  {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object benchTimeLineInsert(Parameter param) {
-        param.node.jump(param.counter, new Callback<Node>() {
+        param.node.travelInTime(param.counter, new Callback<Node>() {
             @Override
             public void on(Node result) {
-                result.set("value",param.counter);
+                result.set("value", Type.INT, param.counter);
                 result.free();
             }
         });
