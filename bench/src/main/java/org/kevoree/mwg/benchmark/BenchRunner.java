@@ -61,13 +61,20 @@ public class BenchRunner {
     }
 
     public static void main(String[] args) throws IOException {
-        if(args.length != 2) {
-            System.err.println("Wrong arguments number: should be 2: [logFolder] [http address to push data]");
+        if(args.length != 4) {
+            System.err.println("Wrong arguments number: should be 4: [logFolder] [http address to push data] [mwg version] [commit id]");
             System.exit(2);
         }
 
         StringBuilder jsonBuilder = new StringBuilder();
-        jsonBuilder.append(START_ARRAY).append(EOL);
+
+        jsonBuilder.append(START_OBJ)
+                .append(START_STRING).append("commitId").append(START_STRING).append(DATA_VALUE_SEP)
+                .append(START_STRING).append(args[3]).append(START_STRING).append(DATA_SEP).append(EOL)
+                .append(START_STRING).append("mwgVersion").append(START_STRING).append(DATA_SEP)
+                .append(START_STRING).append(args[2]).append(START_STRING).append(DATA_SEP).append(EOL)
+                .append(START_STRING).append("benchs").append(START_STRING).append(DATA_VALUE_SEP)
+                .append(START_ARRAY).append(EOL);
 
         Set<BenchmarkListEntry> benchmarks;
         {
@@ -171,7 +178,7 @@ public class BenchRunner {
 
         }
 
-        jsonBuilder.append(END_ARRAY);
+        jsonBuilder.append(END_ARRAY).append(END_OBJ);
 
 
         File logFolder = new File(args[0]);
