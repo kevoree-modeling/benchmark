@@ -1,12 +1,7 @@
 package org.mwg.benchmark.storage.connector;
 
 import org.mwg.*;
-import org.mwg.bench.BenchModel;
-import org.mwg.bench.Execution;
 import org.mwg.core.utility.CoreDeferCounterSync;
-import org.mwg.task.Task;
-
-import static org.mwg.core.task.Actions.newTask;
 
 public class MwgConnector implements Connector {
     private final Graph _graph;
@@ -21,12 +16,12 @@ public class MwgConnector implements Connector {
     private static final String commitIdVar = "commitId";
     private static final String mwgVersionVar = "mwgVersion";
     private static final String jsonLinesVar = "jsonLines";
-
-    private static final Task createExec = newTask()
-            .createTypedNode(Execution.NODE_NAME)
-            .setAttribute(Execution.COMMITID,Execution.COMMITID_TYPE,"{{" + commitIdVar + "}}")
-            .setAttribute(Execution.MWGVERSION,Execution.MWGVERSION_TYPE,"{{" + mwgVersionVar + "}}")
-            .addToGlobalIndex(BenchModel.IDX_IDX_EXECUTION,Execution.COMMITID);
+//    private static final Task createExec = newTask()
+//            .createTypedNode(Execution.NODE_NAME)
+//            .setAttribute(Execution.COMMITID,Execution.COMMITID_TYPE,"{{" + commitIdVar + "}}")
+//            .setAttribute(Execution.MWGVERSION,Execution.MWGVERSION_TYPE,"{{" + mwgVersionVar + "}}")
+//            .addToGlobalIndex(BenchModel.IDX_IDX_EXECUTION,Execution.COMMITID);
+//
 
 //    private static final Task updateVal = newTask()
 //            .travelInTime("{{" + timeVar + "}}")
