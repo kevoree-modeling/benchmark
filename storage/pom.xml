@@ -62,27 +62,27 @@
     </dependencies>
 
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kevoree.mwg.plugins</groupId>
-                <artifactId>model.mavenplugin</artifactId>
-                <version>${mwg.version}</version>
-                <executions>
-                    <execution>
-                        <id>GenModel</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <name>org.mwg.bench.Bench</name>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <!--<build>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.kevoree.mwg.plugins</groupId>-->
+                <!--<artifactId>model.mavenplugin</artifactId>-->
+                <!--<version>${mwg.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>GenModel</id>-->
+                        <!--<phase>generate-sources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<name>org.mwg.bench.Bench</name>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</build>-->
 
     <profiles>
         <profile>
