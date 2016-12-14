@@ -1,6 +1,5 @@
 package org.mwg.storage.connector;
 
-import org.junit.Test;
 import org.mwg.benchmark.storage.connector.MwgConnector;
 
 import java.io.BufferedReader;
@@ -12,7 +11,7 @@ import java.io.InputStreamReader;
  */
 public class MwgConnectorTest {
 
-    @Test
+    //@Test
     public void test() {
         MwgConnector connector = new MwgConnector();
         connector.start();
