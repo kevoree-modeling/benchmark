@@ -71,7 +71,7 @@ public class BenchRunner {
         jsonBuilder.append(START_OBJ)
                 .append(START_STRING).append("commitId").append(START_STRING).append(DATA_VALUE_SEP)
                 .append(START_STRING).append(args[3]).append(START_STRING).append(DATA_SEP).append(EOL)
-                .append(START_STRING).append("mwgVersion").append(START_STRING).append(DATA_SEP)
+                .append(START_STRING).append("mwgVersion").append(START_STRING).append(DATA_VALUE_SEP)
                 .append(START_STRING).append(args[2]).append(START_STRING).append(DATA_SEP).append(EOL)
                 .append(START_STRING).append("benchs").append(START_STRING).append(DATA_VALUE_SEP)
                 .append(START_ARRAY).append(EOL);

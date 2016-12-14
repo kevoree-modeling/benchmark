@@ -4,15 +4,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.Iterator;
 
 public class CSVConnector implements Connector{
 
     private String folderPath = "/home/mwg-bench";
+    private String logErrorFolder = "/var/storage-logs";
 //    String folderPath = ".";
     private File folder;
 
@@ -27,6 +26,8 @@ public class CSVConnector implements Connector{
 
         JSONObject benchsObjs = new JSONObject(jsonData);
         JSONArray benchsData = benchsObjs.getJSONArray("benchs");
+
+        StringBuilder log = new StringBuilder();
 
 
 
@@ -77,9 +78,44 @@ public class CSVConnector implements Connector{
             }
             writer.flush();
             writer.close();
+
+            log.append("[")
+                    .append(System.currentTimeMillis())
+                    .append("]: ")
+                    .append("Process succeed")
+                    .append("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.append("[")
+                    .append(System.currentTimeMillis())
+                    .append("]: ")
+                    .append("EROOR")
+                    .append("\n");
+
+            StringWriter sw = new StringWriter();
+            if(e.getCause() == null) {
+                e.printStackTrace(new PrintWriter(sw));
+            } else {
+                e.getCause().printStackTrace(new PrintWriter(sw));
+            }
+
+            log.append(sw.getBuffer().toString());
+        }
+
+
+        File logFolder = new File(logErrorFolder);
+        logFolder.mkdirs();
+        File logFile = new File(logFolder.getAbsolutePath() + "/" + System.currentTimeMillis() + "-bench-log.json");
+
+        try {
+            FileWriter logWriter = new FileWriter(logFile);
+            logWriter.append(log);
+            logWriter.flush();
+            logWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 
