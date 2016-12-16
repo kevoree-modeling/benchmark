@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 public class CSVConnector implements Connector{
 
-    private String folderPath = "/home/mwg-bench";
+    private String folderPath = "/home/mwg-bench/csv";
     private String logErrorFolder = "/var/storage-logs/csv";
 //    String folderPath = ".";
     private File folder;

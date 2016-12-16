@@ -24,6 +24,8 @@ EXPOSE 9876
 # MWG server exposed port
 EXPOSE 6547
 
+VOLUME ["/home"]
+
 
 RUN mkdir /opt/storage-daemon
 ADD https://github.com/kevoree-modeling/benchmark/raw/master/storage/exec/server.jar /opt/storage-daemon
