@@ -61,12 +61,12 @@ public class GMM {
                     profiler.set(GaussianMixtureNode.COMPRESSION_FACTOR, Type.DOUBLE, factor); //Factor of times before compressing, so at 24x10=240, compressions executes
                     profiler.set(GaussianMixtureNode.COMPRESSION_ITER, Type.INT, iter); //iteration in the compression function, keep default
                     profiler.set(GaussianMixtureNode.THRESHOLD, Type.DOUBLE, threshold); //At the lower level, at higher level will be: threashold + level/2 -> number of variance tolerated to insert in the same node
-                    profiler.set(GaussianMixtureNode.PRECISION, Type.DOUBLE_ARRAY, err); //Minimum covariance in both axis
+                    profiler.set(GaussianMixtureNode.RESOLUTION, Type.DOUBLE_ARRAY, err); //Minimum covariance in both axis
 
 
                     double[] v= new double[2];
 
-                    for(int i=0;i<100_000;i++){
+                    for(int i=0;i<10*100_000;i++){
                         v[0]=random.nextInt(48);
                         v[0]=v[0]/2;
                         v[1]=random.nextDouble()*2000;
@@ -100,7 +100,7 @@ public class GMM {
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(10)
     @Warmup(iterations = 0)
-    @Measurement(iterations = 1, batchSize = 100_000)
+    @Measurement(iterations = 10, batchSize = 100_000)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Timeout(time = 5, timeUnit = TimeUnit.MINUTES)
     public Object benchGMM(Parameter param) {
