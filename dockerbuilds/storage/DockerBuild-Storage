@@ -19,7 +19,10 @@ RUN echo "deb http://ftp.de.debian.org/debian jessie main" > /etc/apt/source.lis
        && update-alternatives --set java /opt/jdk/jdk1.8.0_66/bin/java \
        && update-alternatives --set javac /opt/jdk/jdk1.8.0_66/bin/javac
 
+# Port on which Jenkins server send the bench results
 EXPOSE 9876
+# MWG server exposed port
+EXPOSE 6547
 
 
 RUN mkdir /opt/storage-daemon
