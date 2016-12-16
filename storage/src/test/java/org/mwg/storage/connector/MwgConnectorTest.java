@@ -1,6 +1,5 @@
 package org.mwg.storage.connector;
 
-import org.junit.Test;
 import org.mwg.*;
 import org.mwg.bench.BenchModel;
 import org.mwg.benchmark.storage.connector.MwgConnector;
@@ -15,7 +14,7 @@ import java.util.Arrays;
  */
 public class MwgConnectorTest {
 
-    @Test
+    //@Test
     public void test() {
         MwgConnector connector = new MwgConnector();
         connector.start();
@@ -37,7 +36,7 @@ public class MwgConnectorTest {
     }
 
 
-    @Test
+    //@Test
     public void testTest() {
         Graph graph = new GraphBuilder().withStorage(new WSClient("ws://localhost:6547")).build();
 
