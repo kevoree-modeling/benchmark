@@ -1,21 +1,14 @@
 class org.mwg.bench.Benchmark {
     att name: String
 
-    att failed: Boolean
+    att hasFailed: Boolean
 
-
-    att mode: String
-    att nbThreads: Integer
-    att nbForks: Integer
-    att warmupIterations: Integer
-    att warmupTime: String
-    att warmupBatchSize: Integer
-    att measurementIterations: Integer
-    att measurementTime: String
-    att measurementBatchSize : Integer
+    att cacheSize : Long
+    att useHeap : Boolean
+    att batchSize : Long
 
     att score: Double
-    att scoreError: Double
+    att scoreUnit: String
 
 }
 
@@ -24,12 +17,14 @@ index idx_benchmark: org.mwg.bench.Benchmark {
 }
 
 class org.mwg.bench.Execution {
+    att id : String
     att commitId: String
     att mwgVersion: String
 
     rel benchs: org.mwg.bench.Benchmark
 }
 
-index idx_execution : org.mwg.bench.Execution {
-    commitId
+index idx_exec: org.mwg.bench.Execution {
+    id
 }
+
